@@ -7,7 +7,7 @@
  ###########################################################
 
 from pythonSQL import *
-from sync import *
+from sync import syncStart
 from controlHardware import *
 from command import commandStart
 import data
@@ -30,13 +30,6 @@ def timeDiff(rTime): #Calculates time difference between received and current ti
 			timeDifference = oneDay - nTime + rTime
 		return timeDifference.total_seconds()
 	return False
-
-#####will change
-#sync thread checks updated table in database to check for commands and update data.data.avaliableCommand
-def callSyncThread():
-	syncThread = threading.Thread(target=syncStart)
-	syncThread.start()
-	print 'hi from callSyncThread'
 
 #start dispensing process in new thread
 def callDispenseBills(rTime):
@@ -63,54 +56,53 @@ def schedulerJob():
 def mainProgram():
 	while (True):
 		time.sleep(data.mainLoopDelay) #to avoid errors and save resources
-		##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
+		if (not waitForSync) or (not waitForCmd): #if sync and commands threads aren't changing anything do the following
 
-		#checks if  user changed schedule or dispense completed
-		#to reset scheduler and gets next time to start a new scheduler Thread
-		if (data.scheduleChanged == True): #if user changed schedule or dispense completed
-			# A) stop current SchedulerThread
-			if (data.schedulerAlive):
-				schedulerThread.cancel()
-			nTime = getNextSchedule() # B) get next Time
-			# C) checks if timetable has entries
-			if (nTime == False): #if it has no entries: set data.emptyTimetable to stop the checking process
-				data.emptyTimetable = True
-			else: #if it has entries: re-set data.emptyTimetable to re-start the checking process
-				data.emptyTimetable = False
-			# D) reset scheduler Variables to start new schedulerThread
-			data.schedulerCheck = False #re-set data.schedulerCheck as false
-			data.scheduleChanged = False #re-set data.scheduleChanged status to false
-		
-		##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
-		
-		#scheduler handling
-		if (not data.emptyTimetable and not data.waitForDispense): #if timetable isn't marked empty && no dispensing is running
-			if(data.schedulerCheck == False): #thread not marked finished
-				delayToNextDispense = timeDiff(nTime)
-				if (data.schedulerAlive):	#but alive -> do other work 
-					#updateTimeLCD(delayToNextDispense) #'controlHardware'
-				else: 					#and not alive -> Dispense and call a new schedulerThread
-					if not (data.schedulerAlive): #no scheduler is running
-						if (isDispensed(nTime)=='0'): #not dispensed
-							callSchedulerThread(delayToNextDispense)
-			######error here not called
-			else: #thread finished -> start new dispense process for next time
-				print 'just b4 calling dispense'
-				callDispenseBills(nTime) #'controlHardware'
-				data.schedulerCheck = False
-				data.scheduleChanged = True #to call scheduler for next time
-		
-		##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
+			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
+
+			#checks if  user changed schedule or dispense completed
+			#to reset scheduler and gets next time to start a new scheduler Thread
+			if (data.scheduleChanged == True): #if user changed schedule or dispense completed
+				# A) stop current SchedulerThread
+				if (data.schedulerAlive):
+					schedulerThread.cancel()
+				nTime = getNextSchedule() # B) get next Time
+				# C) checks if timetable has entries
+				if (nTime == False): #if it has no entries: set data.emptyTimetable to stop the checking process
+					data.emptyTimetable = True
+				else: #if it has entries: re-set data.emptyTimetable to re-start the checking process
+					data.emptyTimetable = False
+				# D) reset scheduler Variables to start new schedulerThread
+				data.schedulerCheck = False #re-set data.schedulerCheck as false
+				data.scheduleChanged = False #re-set data.scheduleChanged status to false
+			
+			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
+			
+			#scheduler handling
+			if (not data.emptyTimetable and not data.waitForDispense): #if timetable isn't marked empty && no dispensing is running
+				if(data.schedulerCheck == False): #thread not marked finished
+					delayToNextDispense = timeDiff(nTime)
+					if (data.schedulerAlive):	#but alive -> do other work 
+						#updateTimeLCD(delayToNextDispense) #'controlHardware'
+					else: 					#and not alive -> Dispense and call a new schedulerThread
+						if not (data.schedulerAlive): #no scheduler is running
+							if (isDispensed(nTime)=='0'): #not dispensed
+								callSchedulerThread(delayToNextDispense)
+				######error here not called
+				else: #thread finished -> start new dispense process for next time
+					print 'just b4 calling dispense'
+					callDispenseBills(nTime) #'controlHardware'
+					data.schedulerCheck = False
+					data.scheduleChanged = True #to call scheduler for next time
+			
+			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
 
 #defines global variables used in the program,
-#connect to the database, and calls syncThread
 schedulerThread	= threading.Thread(target=schedulerJob)
-syncThread = threading.Thread(target=syncStart)
 dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 
 
-#time.sleep(data.osDelay) #wait for OS to work properly and database initialization
-connect() #connect to database
+#time.sleep(data.osDelay) #wait for OS to work properly
 commandStart() #start command subscriber to execute commands as soon as it arrives in the FDB
-callSyncThread() #call syncThread here as is_alive and isAlive ain't working well
+syncStart() #start sync subscriber to sync FDB with SQLite as soon as FDB changes 
 mainProgram()

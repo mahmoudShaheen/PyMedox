@@ -18,6 +18,7 @@ import data
 def getCommand(): #called when prog start, connectivity returns, subscribe event
 	rcvData = firebase.get(data.commandURL) #get commands from FDB
 	if rcvData is not None: #if the class is empty the parsed data is None
+		data.waitForCmd = True
 		firebase.put(data.commandURL, {}) #delete commands after parsing
 		io = StringIO
 		commands = json.dumps(jsonData, io) #convert data to string instead of list
@@ -30,6 +31,7 @@ def getCommand(): #called when prog start, connectivity returns, subscribe event
 			uncoded = unicodedata.normalize('NFKD', cmd).encode('ascii','ignore')
 			commandArray.append(uncoded) #the returned value is unicode 
 		execCommand(commandArray) #execute the commands "sends array of parsed commands"
+	data.waitForCmd = False
 
 def execCommand(rCommand): #each command in the array should be "command,arg1,arg2,..."
 	for row in rCommand:
@@ -50,5 +52,5 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 
 def commandStart():
 	S = firebase.subscriber(data.commandURL, getCommand)  #when command class changes in FDB it calls getCommand
-	S.start()  # will get called with initial value of URL, which is empty
+	S.start()  #start the subscriber
 	

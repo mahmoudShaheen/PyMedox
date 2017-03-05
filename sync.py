@@ -6,24 +6,20 @@
 #				  		  Sync								#
  ###########################################################
 
-from pythonSQL import *
-import time
+#to receive changes in timetable and sync FDB with SQLite
+
 import data
- 
-#check database if there is update
-#auto run in background and updates a variables in data
-#main uses these variables to take an action
+
+#updates SQLite db by parsing timetable from FDB, Delete SQLite old timetable data and adds the new data to it
+def syncdb():
+	return
+
+def syncNow():
+	data.waitForSync = True
+	syncdb()
+	scheduleChanged = True
+	data.waitForSync = False
 
 def syncStart():
-	print 'sync thread called i\'m inside'
-	while True:
-		warehouseStatus = statusWarehouseCheck()
-		commandStatus = statusCommandCheck()
-		if (warehouseStatus == '1'):
-			data.scheduleChanged = True
-		
-		if (commandStatus == '1'):
-			data.avaliableCommand = True
-		
-		print 'still inside sync'
-		time.sleep(syncDelay) #delay to avoid errors
+	S = firebase.subscriber(data.timetableURL, syncNow)  #when timetable class changes in FDB it calls syncNow
+	S.start()  #start the subscriber
