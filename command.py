@@ -27,8 +27,8 @@ def execCommand(rCommand): #command should be "command,arg1,arg2,..."
 		openDoor()
 	
 	if(command == "dispenseNext"): #dispense next now
-		continue
-		
+		data.schedulerCheck == True #tells main that the scheduler timer has finished so it dispense next
+	
 	if(command[0] == "dispense"): #dispense drugs
 		billsArray = [int(i) for i in r]
 		hardwareDispense(billsArray)
