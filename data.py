@@ -10,31 +10,17 @@
 #can be accessed from all modules
 #used also for sync threads
 
-#to import MySQLdb from path
-import os, sys
-lib_path = os.path.abspath(os.path.join('..', '..', '..', 'lib'))
-sys.path.append("MySQLdb")
-
-import MySQLdb
 
 #Enumerators
-warehouseCount = 5
+warehouseCount = 4
 #Delay
-dbDelay = 2
 notificationDelay = 2
 syncDelay = 10
 osDelay = 1000
 mainLoopDelay = 1 #can't be more as it does other work like updateLCD
 
-#database login
-host = "localhost"
-user = "monitor"
-password = "password"
-dbName = "box"
-
-#to access database
-db = MySQLdb.connect(host, user, password, dbName)
-curs = db.cursor()
+#SQLite database
+dbName = "box.db"
 
 #threads synchronization
 schedulerCheck = False #to check if the scheduler finishes
