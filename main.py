@@ -9,7 +9,7 @@
 from pythonSQL import *
 from sync import *
 from controlHardware import *
-from command import *
+from command import commandStart
 import data
 
 import threading
@@ -31,17 +31,12 @@ def timeDiff(rTime): #Calculates time difference between received and current ti
 		return timeDifference.total_seconds()
 	return False
 
+#####will change
 #sync thread checks updated table in database to check for commands and update data.data.avaliableCommand
 def callSyncThread():
 	syncThread = threading.Thread(target=syncStart)
 	syncThread.start()
 	print 'hi from callSyncThread'
-
-#if data.data.avaliableCommand true it get commands from database and perform it in new thread
-def callCommandExec():
-	global commandThread
-	commandThread = threading.Thread(target=commandStart)
-	commandThread.start()
 
 #start dispensing process in new thread
 def callDispenseBills(rTime):
@@ -69,15 +64,7 @@ def mainProgram():
 	while (True):
 		time.sleep(data.mainLoopDelay) #to avoid errors and save resources
 		##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
-		
-		#check if syncThread detects a new command
-		#if command available calls commandExecThread to get commands and execute them
-		if (data.avaliableCommand and not commandThread.is_alive()):
-			callCommandExec()
-			data.avaliableCommand = False
-		
-		##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
-		
+
 		#checks if  user changed schedule or dispense completed
 		#to reset scheduler and gets next time to start a new scheduler Thread
 		if (data.scheduleChanged == True): #if user changed schedule or dispense completed
@@ -124,5 +111,6 @@ dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 
 #time.sleep(data.osDelay) #wait for OS to work properly and database initialization
 connect() #connect to database
+commandStart() #start command subscriber to execute commands as soon as it arrives in the FDB
 callSyncThread() #call syncThread here as is_alive and isAlive ain't working well
 mainProgram()

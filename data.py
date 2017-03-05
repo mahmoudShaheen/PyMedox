@@ -27,7 +27,6 @@ schedulerCheck = False #to check if the scheduler finishes
 scheduleChanged = True #to stop the tread 'scheduler' and start again if user changed the schedule or dispense completed
 emptyTimetable = False #check if the table is empty
 waitForDispense = False #to stop scheduler until dispensing process finishes "added to complete other tasks while dispensing process is running"
-avaliableCommand = False #to check if a new command is available
 
 schedulerAlive = False #is_alive isn't working
 
@@ -44,3 +43,9 @@ serverkey = "AAAAGUhL4Qo:APA91bFMS9HI801s8Zy5eHKBqnD2R-nUBbknoufW0DG-gBtnGaCEjsS
 mobileToken = "eWf4a1ANSGQ:APA91bEDXv2TRe0RR2i1ecKjuyhv7xv4_ly0E6c7uwd5FFuOS02VNl-Qno8veyaKVG3t_5PolZXeJkwDxe9S7XmkI-QLov4NNstPLl-VZe3z4W1MZ0l05_nCw9A-ruXjzJFGDwJLWFwH"
 #watch token
 watchToken = ""
+
+###Firebase real-time database paths
+rootURL = "pytest-3452a.firebaseio.com/.json"
+commandURL = "pytest-3452a.firebaseio.com/command/.json"
+timetableURL = "pytest-3452a.firebaseio.com/timetable/.json"
+warehouseURL = "pytest-3452a.firebaseio.com/warehouse/.json"
