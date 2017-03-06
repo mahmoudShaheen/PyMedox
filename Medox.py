@@ -88,7 +88,7 @@ def mainProgram():
 				if(data.schedulerCheck == False): #thread not marked finished
 					delayToNextDispense = timeDiff(nTime)
 					if (data.schedulerAlive):	#but alive -> do other work 
-						#updateTimeLCD(delayToNextDispense) #'controlHardware'
+						updateTimeLCD(delayToNextDispense) #'controlHardware'
 					else: 					#and not alive -> Dispense and call a new schedulerThread
 						if not (data.schedulerAlive): #no scheduler is running
 							if (isDispensed(nTime)=='0'): #not dispensed

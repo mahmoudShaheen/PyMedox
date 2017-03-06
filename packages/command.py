@@ -49,7 +49,7 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 			billsArray = [int(i) for i in commandList]
 			addBills(billsArray)
 		
-		if(command == "forceUpdateTimetable") #force update timetable
+		if(command == "forceUpdateTimetable"): #force update timetable
 			syncdb()
 		
 		if(command == "getBillCount"): #send saved bill count from RPI to phone
