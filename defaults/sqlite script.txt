@@ -1,0 +1,24 @@
+CREATE TABLE `warehouse` (
+`id` int NOT NULL ,
+`bill_count` int,
+PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `timetable` (
+`id` int NOT NULL,
+`time` varchar(20) UNIQUE NOT NULL,
+`bill_array` varchar(20) NOT NULL,
+`dispensed` int NOT NULL,
+PRIMARY KEY (`id`)
+);
+
+INSERT INTO `warehouse` (id ,bill_count)
+VALUES (1,0);
+INSERT INTO `warehouse` (id ,bill_count)
+VALUES (2,0);
+INSERT INTO `warehouse` (id ,bill_count)
+VALUES (3,0);
+INSERT INTO `warehouse` (id ,bill_count)
+VALUES (4,0);
+
+END TRANSACTION;

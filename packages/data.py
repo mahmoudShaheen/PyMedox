@@ -20,7 +20,7 @@ osDelay = 1000
 mainLoopDelay = 1 #can't be more as it does other work like updateLCD
 
 #SQLite database
-dbName = "box.db"
+dbName = "../box.db"
 
 #threads synchronization
 schedulerCheck = False #to check if the scheduler finishes
