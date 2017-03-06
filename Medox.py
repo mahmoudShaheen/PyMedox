@@ -22,6 +22,9 @@ import time #for time.sleep
 import datetime #for datetime.timedelta
 	
 def timeDiff(rTime): #Calculates time difference between received and current time in Seconds
+	#convert rTime: str to time delta
+	h,m,s = rTime.split(':') #split the time string by ':'
+	rTime = datetime.timedelta(hours=int(h),minutes=int(m),seconds=int(s)) #convert h,m,s to ints then to timedelta object
 	if (rTime != False):
 		hmTime=getCTime()
 		h=int(hmTime[0])
@@ -91,7 +94,7 @@ def mainProgram():
 						updateTimeLCD(delayToNextDispense) #'controlHardware'
 					else: 					#and not alive -> Dispense and call a new schedulerThread
 						if not (data.schedulerAlive): #no scheduler is running
-							if (isDispensed(nTime)=='0'): #not dispensed
+							if (isDispensed(nTime)== 0): #not dispensed
 								callSchedulerThread(delayToNextDispense)
 				######error here not called
 				else: #thread finished -> start new dispense process for next time

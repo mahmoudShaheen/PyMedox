@@ -50,12 +50,12 @@ def getNextSchedule():
 		if (rTime > timeArray[-1]): #if currentTime > last item in ordered array "dispensing finished for today"
 			print"min: ",  timeArray[0]
 			resetDispensed() #mark all drugs as not dispensed "as this is the end of the day"
-			return timeArray[0]
+			return str(timeArray[0])
 		else:
 			for row in timeArray:
 				if (row > rTime):
 					print"row: " , row
-					return row
+					return str(row)
 	return false;
 
 #returns array of number of bills for every warehouse medicine which should be dispensed
@@ -131,7 +131,7 @@ def isDispensed(rTime):
 	curs.execute(sql)
 	tempDis = curs.fetchone()
 	close(db)
-	return tempDis[0]
+	return int(tempDis[0])
 
 def close(db):
 	db.commit()
