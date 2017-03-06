@@ -10,6 +10,8 @@ from pythonSQL import *
 from notification import *
 import data
 
+import subprocess #for calling restart shell script
+
 def dispenseBills(rTime):
 	print 'dispensing Bills Called'
 	data.waitForDispense = True
@@ -44,3 +46,7 @@ def openWarehouse():
 
 def callEmergencyNotification():
 	emergencyNotification()
+
+def restartRPI():
+	subprocess.Popen("sudo ./restart.sh", shell=False)
+

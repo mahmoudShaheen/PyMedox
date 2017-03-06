@@ -28,7 +28,7 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 		if (command == "openDoor"): #openDoor
 			openDoor()
 		
-		if(command == "openWarehouse") #open warehouse
+		if(command == "openWarehouse"): #open warehouse
 			openWarehouse()
 		
 		if(command == "dispenseNext"): #dispense next now
@@ -39,22 +39,25 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 			hardwareDispense(billsArray)
 			openDoor()
 		
-		if(command == "clearTimetable") #empty the timetable
+		if(command == "clearTimetable"): #empty the timetable
 			clearTimetable()
 		
-		if(command == "clearBills") #reset bill count to zeros
+		if(command == "clearBills"): #reset bill count to zeros
 			clearBills()
 		
-		if(command == "addBills") #add received bill count to original count
+		if(command == "addBills"): #add received bill count to original count
 			billsArray = [int(i) for i in commandList]
 			addBills(billsArray)
 		
 		if(command == "forceUpdateTimetable") #force update timetable
 			syncdb()
 		
-		if(command == "getBillCount") #send saved bill count from RPI to phone
+		if(command == "getBillCount"): #send saved bill count from RPI to phone
 			billCount = getBillCount()
 			billCountNotification(billCount)
+		
+		if(command == "restartRPI"):
+			restartRPI()
 		
 def getCommand(): #called when prog start, connectivity returns, subscribe event
 	rcvData = firebase.get(data.commandURL) #get commands from FDB
