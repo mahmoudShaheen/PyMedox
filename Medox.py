@@ -6,6 +6,11 @@
 #				 	 python Server							#
  ###########################################################
 
+import os, sys, inspect
+
+cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"packages")))
+sys.path.insert(0, cmd_subfolder)
+
 from pythonSQL import *
 from sync import syncStart
 from controlHardware import *
