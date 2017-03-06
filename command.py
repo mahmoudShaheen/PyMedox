@@ -9,6 +9,10 @@
 #to receive commands and execute them
 
 from controlHardware import *
+from pythonSQL import *
+from sync import *
+from notification import *
+
 import json
 import StringIO
 import unicodedata
@@ -24,14 +28,34 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 		if (command == "openDoor"): #openDoor
 			openDoor()
 		
+		if(command == "openWarehouse") #open warehouse
+			openWarehouse()
+		
 		if(command == "dispenseNext"): #dispense next now
 			data.schedulerCheck == True #tells main that the scheduler timer has finished so it dispense next
 		
-		if(command[0] == "dispense"): #dispense drugs
-			billsArray = [int(i) for i in r]
+		if(command == "dispense"): #dispense drugs
+			billsArray = [int(i) for i in commandList]
 			hardwareDispense(billsArray)
 			openDoor()
-
+		
+		if(command == "clearTimetable") #empty the timetable
+			clearTimetable()
+		
+		if(command == "clearBills") #reset bill count to zeros
+			clearBills()
+		
+		if(command == "addBills") #add received bill count to original count
+			billsArray = [int(i) for i in commandList]
+			addBills(billsArray)
+		
+		if(command == "forceUpdateTimetable") #force update timetable
+			syncdb()
+		
+		if(command == "getBillCount") #send saved bill count from RPI to phone
+			billCount = getBillCount()
+			billCountNotification(billCount)
+		
 def getCommand(): #called when prog start, connectivity returns, subscribe event
 	rcvData = firebase.get(data.commandURL) #get commands from FDB
 	if rcvData is not None: #if the class is empty the parsed data is None
@@ -53,4 +77,4 @@ def getCommand(): #called when prog start, connectivity returns, subscribe event
 def commandStart():
 	S = firebase.subscriber(data.commandURL, getCommand)  #when command class changes in FDB it calls getCommand
 	S.start()  #start the subscriber
-	
+

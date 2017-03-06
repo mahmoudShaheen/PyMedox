@@ -69,29 +69,31 @@ def getBills(rTime):
 def checkBills(bills): #check if the bills in the box will be enough for the schedule, accepts array of bills [1,0,2,0]
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
-	for row in bills:
+	
+	for i in range(1,data.warehouseCount+1): #1 for id to start from 1
 		sql = """SELECT `bill_count` FROM `warehouse` 
-				WHERE `id` = '%d' """ % (row+1)
+				WHERE `id` = '%d' """ % (i)
 		curs.execute(sql)
-		close(db)
 		remainingBills = curs.fetchone()
-		if bills[row] > remainingBills:
+		if bills[i-1] > remainingBills:
+			close(db)
 			return False
+	close(db)
 	return True
 
 def subtractBills(bills): #update bill_count after dispensing, accepts array of bills [1,0,2,0]
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
-	for row in bills:
+	for i in range(1,data.warehouseCount+1): #1 for id to start from 1
 		sql = """SELECT `bill_count` FROM `warehouse` 
-				WHERE `id` = '%d' """ % (row+1)
+				WHERE `id` = '%d' """ % (i)
 		curs.execute(sql)
 		remainingBills = curs.fetchone()
-		newValue = remainingBills - bills[row]
+		newValue = remainingBills - bills[i-1]
 		
 		sql = """UPDATE warehouse SET  
 			bill_count='%d' 
-			WHERE id = '%d'"""%(newValue,row+1)
+			WHERE id = '%d'"""%(newValue,i)
 		curs.execute(sql)
 	close(db)
 
@@ -125,3 +127,60 @@ def isDispensed(rTime):
 def close(db):
 	db.commit()
 	db.close()
+
+def clearTimetable():
+	db = sqlite3.connect(data.dbName)
+	curs = db.cursor()
+	data.scheduleChanged = True
+	curs.execute("DELETE FROM timetable")
+	tempDis = curs.fetchone()
+	close(db)
+	
+def refreshTimetable(timeArray, drugArray):
+	clearTimetable()
+	db = sqlite3.connect(data.dbName)
+	curs = db.cursor()
+	i = 0
+	for row in timeArray:
+		sql = """"INSERT INTO `timetable` (id ,time, bill_array, dispensed)
+			VALUES ('%d', '%s', '%s', '%d'),;""" % (i+1, timeArray[i], drugArray[i], 0) #i+1 for id to start from 1
+		curs.execute(sql)
+	close(db)
+
+def addBills(billArray):
+	db = sqlite3.connect(data.dbName)
+	curs = db.cursor()
+	for i in range(1,data.warehouseCount+1): #1 for id to start from 1
+		sql = """SELECT `bill_count` FROM `warehouse` 
+				WHERE `id` = '%d' """ % (i)
+		curs.execute(sql)
+		remainingBills = curs.fetchone()
+		newValue = remainingBills + bills[i-1]
+		sql = """UPDATE warehouse SET  
+			bill_count='%d' 
+			WHERE id = '%d'"""%(newValue,i)
+		curs.execute(sql)
+	close(db)
+
+def clearBills():
+	db = sqlite3.connect(data.dbName)
+	curs = db.cursor()
+	for i in range(1,data.warehouseCount+1): #1 for id to start from 1
+		sql = """UPDATE warehouse SET  
+			bill_count='%d' 
+			WHERE id = '%d'"""%(0,i)
+		curs.execute(sql)
+	close(db)
+
+def getBillCount():
+	db = sqlite3.connect(data.dbName)
+	curs = db.cursor()
+	billCount = ""
+	for i in range(1,data.warehouseCount+1): #1 for id to start from 1
+		sql = """SELECT `bill_count` FROM `warehouse` 
+				WHERE `id` = '%d' """ % (i)
+		curs.execute(sql)
+		remainingBills = curs.fetchone()
+		billCount = billCount + str(remainingBills) + ","
+	billCount = billCount[:-1] #remove the last ","
+	return billCount

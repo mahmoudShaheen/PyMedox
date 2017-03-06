@@ -11,6 +11,7 @@
 #	0 low 			#
 #	1 High 			#
 #	2 Emergency		#
+#	5 data			#
 #####################
 
 #to send notifications through Firebase 
@@ -30,6 +31,18 @@ def dispensedNotification():
 def doorOpenedNotification():
 	message = "Drawer opened!"
 	level = 0
+	receiver = "phone"
+	sendNotification(message, level, receiver)
+
+def warehouseOpenedNotification():
+	message = "warehouse opened!"
+	level = 1
+	receiver = "phone"
+	sendNotification(message, level, receiver)
+
+def billCountNotification(billCount):
+	message = billCount
+	level = 5
 	receiver = "phone"
 	sendNotification(message, level, receiver)
 

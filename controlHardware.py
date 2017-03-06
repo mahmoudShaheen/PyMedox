@@ -37,5 +37,10 @@ def openDoor():
 	#hardware openDoor
 	doorOpenedNotification()
 
+def openWarehouse():
+	print 'openWarehouse Called'
+	#hardware openWarehouse
+	warehouseOpenedNotification()
+
 def callEmergencyNotification():
 	emergencyNotification()
