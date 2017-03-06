@@ -11,6 +11,7 @@ import data #to use data using data.x 'change occurs here is limited to here'
 from time import strftime
 import datetime
 import time
+import unicodedata
 
 #Get current time "returns hours, minutes"
 def getCTime():
@@ -32,13 +33,18 @@ def getNextSchedule():
 	sql = """SELECT `time` FROM `timetable`
 		ORDER BY `time` ASC"""
 	curs.execute(sql)
-	close(db)
-	tempTimeArray = curs.fetchall()
-	if (len(tempTimeArray) == 0): #return false if timetable is empty
-		return False
+	tempTime = curs.fetchone()
 	timeArray = []
-	for row in tempTimeArray:
-		timeArray.append(row[0])
+	while (tempTime is not None):
+		tempTime = tempTime[0]
+		uncoded = unicodedata.normalize('NFKD', tempTime).encode('ascii','ignore') #convert received Unicode to string
+		h,m,s = uncoded.split(':') #split the time string by ':'
+		tempTime = datetime.timedelta(hours=int(h),minutes=int(m),seconds=int(s)) #convert h,m,s to ints then to timedelta object
+		timeArray.append(tempTime)
+		tempTime = curs.fetchone()
+	close(db)
+	if (len(timeArray) == 0): #return false if timetable is empty
+		return False
 	print "time array:\n" , timeArray
 	if(len(timeArray) > 0 ):
 		if (rTime > timeArray[-1]): #if currentTime > last item in ordered array "dispensing finished for today"
@@ -61,8 +67,9 @@ def getBills(rTime):
 		WHERE `time` = '%s' """ % (rTime)
 	curs.execute(sql)
 	billString = curs.fetchone()
+	billString = billString[0]
 	billArray = billString.split(",") #convert string to array by separator ","
-	bills = [int(i) for i in r] #convert the string array to int array
+	bills = [int(i) for i in billArray] #convert the string array to int array
 	close(db)
 	return bills
 
@@ -75,6 +82,7 @@ def checkBills(bills): #check if the bills in the box will be enough for the sch
 				WHERE `id` = '%d' """ % (i)
 		curs.execute(sql)
 		remainingBills = curs.fetchone()
+		remainingBills = remainingBills[0]
 		if bills[i-1] > remainingBills:
 			close(db)
 			return False
@@ -89,6 +97,7 @@ def subtractBills(bills): #update bill_count after dispensing, accepts array of 
 				WHERE `id` = '%d' """ % (i)
 		curs.execute(sql)
 		remainingBills = curs.fetchone()
+		remainingBills = remainingBills[0]
 		newValue = remainingBills - bills[i-1]
 		
 		sql = """UPDATE warehouse SET  
@@ -97,7 +106,7 @@ def subtractBills(bills): #update bill_count after dispensing, accepts array of 
 		curs.execute(sql)
 	close(db)
 
-def markDispensed(rtime): #mark a time as dispensed
+def markDispensed(rTime): #mark a time as dispensed
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()	
 	sql = """UPDATE timetable SET  
@@ -133,7 +142,6 @@ def clearTimetable():
 	curs = db.cursor()
 	data.scheduleChanged = True
 	curs.execute("DELETE FROM timetable")
-	tempDis = curs.fetchone()
 	close(db)
 	
 def refreshTimetable(timeArray, drugArray):
@@ -142,9 +150,10 @@ def refreshTimetable(timeArray, drugArray):
 	curs = db.cursor()
 	i = 0
 	for row in timeArray:
-		sql = """"INSERT INTO `timetable` (id ,time, bill_array, dispensed)
-			VALUES ('%d', '%s', '%s', '%d'),;""" % (i+1, timeArray[i], drugArray[i], 0) #i+1 for id to start from 1
+		sql = """INSERT INTO `timetable` (id ,time, bill_array, dispensed)
+			VALUES ('%d', '%s', '%s', '%d');""" % (i+1, timeArray[i], drugArray[i], 0) #i+1 for id to start from 1
 		curs.execute(sql)
+		i = i + 1
 	close(db)
 
 def addBills(billArray):
@@ -155,7 +164,8 @@ def addBills(billArray):
 				WHERE `id` = '%d' """ % (i)
 		curs.execute(sql)
 		remainingBills = curs.fetchone()
-		newValue = remainingBills + bills[i-1]
+		remainingBills = remainingBills[0]
+		newValue = remainingBills + billArray[i-1]
 		sql = """UPDATE warehouse SET  
 			bill_count='%d' 
 			WHERE id = '%d'"""%(newValue,i)
@@ -181,6 +191,7 @@ def getBillCount():
 				WHERE `id` = '%d' """ % (i)
 		curs.execute(sql)
 		remainingBills = curs.fetchone()
+		remainingBills = remainingBills[0]
 		billCount = billCount + str(remainingBills) + ","
 	billCount = billCount[:-1] #remove the last ","
 	return billCount
