@@ -54,7 +54,7 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 		
 		if(command == "getBillCount"): #send saved bill count from RPI to phone
 			billCount = getBillCount()
-			billCountJson = "{ billCount :'" + billCount + "'}"
+			billCountJson = "{ billCount :" + billCount + "}"
 			firebase.patch(data.dataURL, billCountJson)
 		
 		if(command == "restartRPI"):
