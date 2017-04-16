@@ -12,7 +12,7 @@ import data
 import firebase
 
 def updateToken():
-	rcvData = firebase.get(data.tokenURL) #get timetable from FDB
+	rcvData = firebase.get(data.tokenURL) #get tokens from FDB
 	if rcvData is not None: #if the class is empty the parsed data is None
 		io = StringIO
 		tokens = json.dumps(rcvData, io) #convert data to string instead of list
