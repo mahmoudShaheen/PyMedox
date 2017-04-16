@@ -54,7 +54,7 @@ def notEnoughBillsNotification():
 
 def emergencyNotification():
 	message = "emergency"
-	level = 2
+	level = 1
 	receiver = "phone"
 	sendNotification(message, level, receiver)
  
