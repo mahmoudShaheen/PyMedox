@@ -107,7 +107,7 @@ def mainProgram():
 			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
 
 #defines global variables used in the program,
-schedulerThread	= threading.Thread(target=schedulerJob)
+schedulerThread = threading.Thread(target=schedulerJob)
 dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 
 #time.sleep(data.osDelay) #wait for OS to work properly

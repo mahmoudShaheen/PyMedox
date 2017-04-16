@@ -8,9 +8,8 @@
 
 #####################
 #notificationLevel: #
-#	0 low 			#
-#	1 High 			#
-#	2 Emergency		#
+#	0 info 			#
+#	1 Emergency		#
 #	5 data			#
 #####################
 
@@ -33,6 +32,13 @@ def doorOpenedNotification():
 	level = 0
 	receiver = "phone"
 	sendNotification(message, level, receiver)
+	
+def doorNotOpenedNotification():
+	message = "Drawer NOT opened!"
+	level = 1
+	receiver = "phone"
+	sendNotification(message, level, receiver)
+
 
 def warehouseOpenedNotification():
 	message = "warehouse opened!"
