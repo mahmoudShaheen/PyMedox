@@ -61,20 +61,21 @@ def emergencyNotification():
  #send notification to database and update notification status by call statusNotificationUpdate
 def sendNotification(rMessage, rLevel, rReceiver):
 	#Initialize 
-	push_service = FCMNotification(api_key = data.serverKey)
-	
+	title = "message from Box"
 	if rReceiver == "watch": #send notification to watch
-		registration_id = data.watchToken
-		message_title = str(rLevel)
-		message_body = rMessage
-		result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body)
-		print result
-	
+		to = data.watchToken
 	if rReceiver == "phone": #send notification to phone
-		registration_id = data.mobileToken
-		message_title = str(rLevel)
-		message_body = rMessage
-		result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body)
-		print result
+		to = data.mobileToken
+	
+	#creating JSON object
+	message = "{"
+	message += "message : " + rMessage + ", "
+	message += "title : " + title + ", "
+	message += "level : " + str(rLevel) + ", "
+	message += "to : " + to 
+	message += "}"
+	
+	#Send message to database for cloud function to deliver
+	firebase.push(data.messagesURL, message)
 	
 	time.sleep(data.notificationDelay) #delay to avoid errors
