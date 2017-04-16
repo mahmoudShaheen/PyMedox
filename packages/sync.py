@@ -17,7 +17,7 @@ def syncdb():
 	rcvData = firebase.get(data.timetableURL) #get timetable from FDB
 	if rcvData is not None: #if the class is empty the parsed data is None
 		io = StringIO
-		timetable = json.dumps(jsonData, io) #convert data to string instead of list
+		timetable = json.dumps(rcvData, io) #convert data to string instead of list
 		timetable = timetable[1:-1] #removes [] from data
 		timetable = timetable.split(', {') #split string to JSON objects style #JSON.loads accepts only one object at a time
 		timeArray = [] #for time values

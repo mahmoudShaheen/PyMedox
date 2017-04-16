@@ -65,7 +65,7 @@ def getCommand(): #called when prog start, connectivity returns, subscribe event
 		data.waitForCmd = True
 		firebase.put(data.commandURL, {}) #delete commands after parsing
 		io = StringIO
-		commands = json.dumps(jsonData, io) #convert data to string instead of list
+		commands = json.dumps(rcvData, io) #convert data to string instead of list
 		commands = commands[1:-1] #removes [] from data
 		commands = commands.split(', {') #split string to JSON objects style #JSON.loads accepts only one object at a time
 		commandArray = []
