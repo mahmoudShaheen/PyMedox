@@ -15,7 +15,6 @@
 #####################
 
 #to send notifications through Firebase 
-from pyfcm import FCMNotification
 import data
 import firebase
 	
