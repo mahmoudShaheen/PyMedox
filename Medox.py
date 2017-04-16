@@ -13,6 +13,7 @@ sys.path.insert(0, cmd_subfolder)
 
 from pythonSQL import *
 from sync import syncStart
+from token import tokenStart
 from controlHardware import *
 from command import commandStart
 import data
@@ -112,4 +113,5 @@ dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 #time.sleep(data.osDelay) #wait for OS to work properly
 commandStart() #start command subscriber to execute commands as soon as it arrives in the FDB
 syncStart() #start sync subscriber to sync FDB with SQLite as soon as FDB changes 
+tokenStart()  #start token thread to update tokens as soon as FDB changes 
 mainProgram()
