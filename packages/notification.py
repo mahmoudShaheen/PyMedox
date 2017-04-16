@@ -40,12 +40,6 @@ def warehouseOpenedNotification():
 	receiver = "phone"
 	sendNotification(message, level, receiver)
 
-def billCountNotification(billCount):
-	message = billCount
-	level = 5
-	receiver = "phone"
-	sendNotification(message, level, receiver)
-
 def notEnoughBillsNotification():
 	message = "No enough Bills!"
 	level = 1
