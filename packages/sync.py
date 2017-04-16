@@ -10,6 +10,7 @@
 
 import data
 from pythonSQL import *
+import firebase
 
 #updates SQLite db by parsing timetable from FDB, Delete SQLite old timetable data and adds the new data to it
 def syncdb():
