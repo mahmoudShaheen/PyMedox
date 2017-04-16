@@ -10,15 +10,14 @@
 
 import data
 from pythonSQL import *
+import firebase
 
 #updates SQLite db by parsing timetable from FDB, Delete SQLite old timetable data and adds the new data to it
 def syncdb():
 	rcvData = firebase.get(data.timetableURL) #get timetable from FDB
-	if rcvData is None: #if the class is empty -> empty timetable
-		clearTimetable() #empty timetable in SQLite
 	if rcvData is not None: #if the class is empty the parsed data is None
 		io = StringIO
-		timetable = json.dumps(jsonData, io) #convert data to string instead of list
+		timetable = json.dumps(rcvData, io) #convert data to string instead of list
 		timetable = timetable[1:-1] #removes [] from data
 		timetable = timetable.split(', {') #split string to JSON objects style #JSON.loads accepts only one object at a time
 		timeArray = [] #for time values

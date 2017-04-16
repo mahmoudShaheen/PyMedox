@@ -12,6 +12,11 @@ import data
 
 import subprocess #for calling restart shell script
 
+import threading #for timer thread
+import datetime #for datetime.timedelta
+doorDelay = datetime.timedelta(minutes=5,seconds=0) #5 minutes then send door not opened notification
+timerThread = threading.Timer(doorDelay, target=doorNotOpenedNotification) #to check if door not opened for 5 minutes
+
 def dispenseBills(rTime):
 	print 'dispensing Bills Called'
 	data.waitForDispense = True
@@ -23,6 +28,7 @@ def dispenseBills(rTime):
 	markDispensed(rtime)
 	subtractBills(bills)
 	dispensedNotification()
+	timerThread.start()
 	data.waitForDispense = False
 
 def updateTimeLCD (rTime):
@@ -37,6 +43,7 @@ def hardwareDispense(rBills):
 def openDoor():
 	print 'openDoor Called'
 	#hardware openDoor
+	timerThread.cancel()
 	doorOpenedNotification()
 
 def openWarehouse():
