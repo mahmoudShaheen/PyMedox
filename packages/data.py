@@ -8,7 +8,7 @@
 
 #hold some data and statics for the program
 #can be accessed from all modules
-#used also for sync threads
+#used also to sync threads
 
 
 #Enumerators
@@ -33,21 +33,20 @@ waitForSync = False #to stop main until db is updated
 waitForCmd = False #to stop main until commands are executed
 
 
-###Firebase Keys
-# Your API-key can be gotten from:  https://console.firebase.google.com/project/<project-name>/settings/cloudMessaging
-#sender ID not used
-senderID = "108587114762" 
-#Legacy Server key can be used but not recommended
-legacyServerkey = "AIzaSyDSYqjLbeHaKPcMg_kGai54MgDmeTCV-XI"
-#Server key used to send messages
-serverkey = "AAAAGUhL4Qo:APA91bFMS9HI801s8Zy5eHKBqnD2R-nUBbknoufW0DG-gBtnGaCEjsS9munlsVpWNfTowIxIRUfHa59hS8TT7Ygej2biL1dPvncEx4rzxuBsm8rrOESW7AbMUtLHzuV1rbgihUFryj3i"
+###Tokens
 #mobile token
-mobileToken = "eWf4a1ANSGQ:APA91bEDXv2TRe0RR2i1ecKjuyhv7xv4_ly0E6c7uwd5FFuOS02VNl-Qno8veyaKVG3t_5PolZXeJkwDxe9S7XmkI-QLov4NNstPLl-VZe3z4W1MZ0l05_nCw9A-ruXjzJFGDwJLWFwH"
+mobileToken = ""
 #watch token
 watchToken = ""
 
 ###Firebase real-time database paths
-rootURL = "pytest-3452a.firebaseio.com/.json"
-commandURL = "pytest-3452a.firebaseio.com/command/.json"
-timetableURL = "pytest-3452a.firebaseio.com/timetable/.json"
-warehouseURL = "pytest-3452a.firebaseio.com/warehouse/.json"
+rootURL = "medox-f7251.firebaseio.com"
+messagesURL = rootURL + "/messages/.json"
+UID = "Vbxp1DKBbMckkknNyDW0c0IGEYa2"
+userURL = rootURL + "/users/" + UID
+commandURL = userURL + "/command/" + ".json"
+timetableURL = userURL + "/timetable/" + ".json"
+warehouseURL = userURL + "/warehouse/" + ".json"
+tokenURL = userURL + "/token/" + ".json"
+billCountURL = userURL + "/data/billCount/" + ".json"
+configURL = userURL + "/config/" + ".json"
