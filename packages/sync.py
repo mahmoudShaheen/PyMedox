@@ -15,8 +15,6 @@ import firebase
 #updates SQLite db by parsing timetable from FDB, Delete SQLite old timetable data and adds the new data to it
 def syncdb():
 	rcvData = firebase.get(data.timetableURL) #get timetable from FDB
-	if rcvData is None: #if the class is empty -> empty timetable
-		clearTimetable() #empty timetable in SQLite
 	if rcvData is not None: #if the class is empty the parsed data is None
 		io = StringIO
 		timetable = json.dumps(jsonData, io) #convert data to string instead of list
