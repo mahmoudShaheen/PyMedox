@@ -195,3 +195,25 @@ def getBillCount():
 		billCount = billCount + str(remainingBills) + ","
 	billCount = billCount[:-1] #remove the last ","
 	return billCount
+
+#return the sum of the required bills in 24 hours "total in timetable"
+def getTotalDayBills():
+	db = sqlite3.connect(data.dbName)
+	curs = db.cursor()
+	totalBills = [0,0,0,0]
+	sql = "SELECT `bill_array` FROM `timetable` "
+	curs.execute(sql)
+	billString = curs.fetchone()
+
+	while (billString != None):
+		billString = billString[0]
+		billArray = billString.split(",") #convert string to array by separator ","
+		bills = [int(i) for i in billArray] #convert the string array to int array
+		totalBills = [x + y for x, y in zip(totalBills, bills)]
+		billString = curs.fetchone()
+	return totalBills
+	
+#returns whether the bills will be enough for one day
+def checkDay():
+	totalBills = getTotalDayBills()
+	return checkBills(totalBills)
