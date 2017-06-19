@@ -1,7 +1,8 @@
 from pythonSQL import getTotalDayBills, checkBills
 from notification import notEnoughDayBillsNotification
 
-#returns whether the bills will be enough for one day
+#checks if bills in warehouse are enough for one day
+#if not sends notification to care giver
 def checkDay():
 	totalBills = getTotalDayBills()
 	enough = checkBills(totalBills)

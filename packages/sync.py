@@ -10,6 +10,7 @@
 
 import data
 from pythonSQL import *
+from billCount import *
 import firebase
 
 #updates SQLite db by parsing timetable from FDB, Delete SQLite old timetable data and adds the new data to it
@@ -31,6 +32,7 @@ def syncdb():
 			uncodedDrug = unicodedata.normalize('NFKD', drug).encode('ascii','ignore')
 			drugArray.append(uncodedDrug) #the returned value is Unicode 
 		refreshTimetable(timeArray, drugArray) #empty timetable in SQLite, and adds the new values
+		checkDay() #checks if bills in warehouse are enough for one day
 
 def syncNow():
 	data.waitForSync = True

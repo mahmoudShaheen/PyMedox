@@ -8,6 +8,7 @@
 
 from pythonSQL import *
 from notification import *
+from billCount import *
 import data
 
 import subprocess #for calling restart shell script
@@ -28,6 +29,7 @@ def dispenseBills(rTime):
 	markDispensed(rtime)
 	subtractBills(bills)
 	dispensedNotification()
+	checkDay() #checks if bills in warehouse are enough for one day
 	timerThread.start()
 	data.waitForDispense = False
 
