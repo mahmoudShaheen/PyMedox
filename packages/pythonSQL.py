@@ -212,8 +212,3 @@ def getTotalDayBills():
 		totalBills = [x + y for x, y in zip(totalBills, bills)]
 		billString = curs.fetchone()
 	return totalBills
-	
-#returns whether the bills will be enough for one day
-def checkDay():
-	totalBills = getTotalDayBills()
-	return checkBills(totalBills)

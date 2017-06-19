@@ -51,6 +51,12 @@ def notEnoughBillsNotification():
 	level = 1
 	receiver = "phone"
 	sendNotification(message, level, receiver)
+	
+def notEnoughDayBillsNotification():
+	message = "Bills aren't enough for one day'!"
+	level = 1
+	receiver = "phone"
+	sendNotification(message, level, receiver)
 
 def emergencyNotification():
 	message = "emergency"
