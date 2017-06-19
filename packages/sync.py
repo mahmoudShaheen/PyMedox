@@ -32,7 +32,7 @@ def syncdb():
 			uncodedDrug = unicodedata.normalize('NFKD', drug).encode('ascii','ignore')
 			drugArray.append(uncodedDrug) #the returned value is Unicode 
 		refreshTimetable(timeArray, drugArray) #empty timetable in SQLite, and adds the new values
-		checkDay() #checks if bills in warehouse are enough for one day
+		checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
 
 def syncNow():
 	data.waitForSync = True

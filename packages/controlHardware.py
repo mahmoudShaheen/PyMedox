@@ -29,7 +29,7 @@ def dispenseBills(rTime):
 	markDispensed(rtime)
 	subtractBills(bills)
 	dispensedNotification()
-	checkDay() #checks if bills in warehouse are enough for one day
+	checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
 	timerThread.start()
 	data.waitForDispense = False
 

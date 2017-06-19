@@ -15,6 +15,7 @@ from pythonSQL import *
 from sync import syncStart
 from token import tokenStart
 from controlHardware import *
+from billCount import *
 from command import commandStart
 import data
 
@@ -114,4 +115,5 @@ dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 commandStart() #start command subscriber to execute commands as soon as it arrives in the FDB
 syncStart() #start sync subscriber to sync FDB with SQLite as soon as FDB changes 
 tokenStart()  #start token thread to update tokens as soon as FDB changes 
-mainProgram()
+checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
+mainProgram() #call main program

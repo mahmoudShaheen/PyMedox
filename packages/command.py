@@ -39,7 +39,7 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 			billsArray = [int(i) for i in commandList]
 			hardwareDispense(billsArray)
 			openDoor()
-			checkDay() #checks if bills in warehouse are enough for one day
+			checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
 		
 		if(command == "clearTimetable"): #empty the timetable
 			clearTimetable()
@@ -50,11 +50,11 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 		if(command == "addBills"): #add received bill count to original count
 			billsArray = [int(i) for i in commandList]
 			addBills(billsArray)
-			checkDay() #checks if bills in warehouse are enough for one day
+			checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
 		
 		if(command == "forceUpdateTimetable"): #force update timetable
 			syncdb()
-			checkDay() #checks if bills in warehouse are enough for one day
+			checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
 		
 		if(command == "getBillCount"): #send saved bill count from RPI to phone
 			billCount = getBillCount()
