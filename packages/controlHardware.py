@@ -59,3 +59,10 @@ def callEmergencyNotification():
 def restartRPI():
 	subprocess.Popen("sudo ./restart.sh", shell=False)
 
+#returns measurements from sensors temperature, light
+def getSensorData():
+	return "50","70"
+
+#accepts boolean state, turn on/off switches
+def updateSwitch(state1, state2):
+	print "switch 1,2 should be" + state1 + ", " + state2
