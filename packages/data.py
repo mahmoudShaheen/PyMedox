@@ -18,6 +18,7 @@ notificationDelay = 2
 syncDelay = 10
 osDelay = 1000
 mainLoopDelay = 1 #can't be more as it does other work like updateLCD
+sensorDelay = 10 #update sensor values in db every 10 seconds
 
 #SQLite database
 dbName = "../box.db"
@@ -45,6 +46,8 @@ messagesURL = rootURL + "/messages/.json"
 UID = "Vbxp1DKBbMckkknNyDW0c0IGEYa2"
 userURL = rootURL + "/users/" + UID
 commandURL = userURL + "/command/" + ".json"
+sensorURL = userURL + "/iot/sensor/" + ".json"
+switchURL = userURL + "/iot/switch/" + ".json"
 timetableURL = userURL + "/timetable/" + ".json"
 warehouseURL = userURL + "/warehouse/" + ".json"
 tokenURL = userURL + "/token/" + ".json"
