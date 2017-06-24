@@ -5,20 +5,20 @@
 ////////////////////////////////////////////////////////////
 
 //Arduino Pins definition
-//stepper-1
-#define    stepper11       2
-#define    stepper12       3
-#define    stepper13       4
-#define    stepper14       5
-//stepper-2
-#define    stepper21       6
-#define    stepper22       7
-#define    stepper23       8
-#define    stepper24       9
+//Up-Down stepper
+#define    upPin1       2
+#define    upPin2       3
+#define    upPin3       4
+#define    upPin4       5
+//Rotation stepper
+#define    roPin1       6
+#define    roPin2       7
+#define    roPin3       8
+#define    roPin4       9
 //other outputs
 #define    drawer         10
 #define    warehouse      11
-#define    relay          12
+#define    pump          12
 //sensors
 #define    infrared        13
 #define    current         A0
@@ -27,23 +27,42 @@
 
 #define    doorDelay        1000
 #define    warehouseDelay   1000
+#define    roMotorDelay   10
+#define    upMotorDelay   3
+#define    i72   10
+#define    j72   8
+#define    iup   50
+#define    jup   8
+
 
 //variables definition
 char  serialData; //for storing serial string
 float tempFloat = 0; //for saving sensor data temporary
 int billCount = 0; //for storing bill count added by ISR
 
+int i,j;
+
+/// using half step mode 
+int seq[8][4]={1,0,0,0,
+               1,1,0,0,
+               0,1,0,0,
+               0,1,1,0,
+               0,0,1,0,
+               0,0,1,1,
+               0,0,0,1,
+               1,0,0,1 };
+
 void setup() {
   //Setting input/output Pins
   //outputs
-  pinMode(  stepper11,  OUTPUT);
-  pinMode(  stepper12,  OUTPUT);
-  pinMode(  stepper13,  OUTPUT);
-  pinMode(  stepper14,  OUTPUT);
-  pinMode(  stepper21,  OUTPUT);
-  pinMode(  stepper22,  OUTPUT);
-  pinMode(  stepper23,  OUTPUT);
-  pinMode(  stepper24,  OUTPUT);
+  pinMode(  upPin1,  OUTPUT);
+  pinMode(  upPin2,  OUTPUT);
+  pinMode(  upPin3,  OUTPUT);
+  pinMode(  upPin4,  OUTPUT);
+  pinMode(  roPin1,  OUTPUT);
+  pinMode(  roPin2,  OUTPUT);
+  pinMode(  roPin3,  OUTPUT);
+  pinMode(  roPin4,  OUTPUT);
   pinMode(  drawer,     OUTPUT);
   pinMode(  warehouse,  OUTPUT);
   pinMode(  relay,      OUTPUT);
@@ -136,4 +155,56 @@ float getCurrent() {
 //adds one to billCount: used as ISR 'called when IR sensor detects new bill'
 void counter() {
   billCount = billCount + 1;
+}
+
+//Dispensing functions
+//up down motor control    
+void moveUp(){
+  for(i=0;i<iup;i++){
+    for(j=0;j<jup;j++){
+      digitalWrite(upPin1,seq[j][0]);
+      digitalWrite(upPin2,seq[j][1]);
+      digitalWrite(upPin3,seq[j][2]);
+      digitalWrite(upPin4,seq[j][3]);
+      delay(upMotorDelay);
+    }
+  }
+}
+void moveDown(){
+  for(i=0;i<iup;i++){
+    for(j=jup;j>0;j--){
+      digitalWrite(upPin1,seq[j][0]);
+      digitalWrite(upPin2,seq[j][1]);
+      digitalWrite(upPin3,seq[j][2]);
+      digitalWrite(upPin4,seq[j][3]);
+      delay(upMotorDelay);
+    }
+  }
+}
+
+//// stop motors
+void roMotorStop(){
+  digitalWrite(roPin1,LOW);
+  digitalWrite(roPin2,LOW);
+  digitalWrite(roPin3,LOW);
+  digitalWrite(roPin4,LOW);
+}
+void upMotorStop(){
+  digitalWrite(upPin1,LOW);
+  digitalWrite(upPin2,LOW);
+  digitalWrite(upPin3,LOW);
+  digitalWrite(upPin4,LOW);
+}
+
+/// use to move 72 degree     
+void medicineMove(){
+  for(i=0;i<i72;i++){
+    for(j=0;j<j72;j++){
+      digitalWrite(roPin1,seq[j][0]);
+      digitalWrite(roPin2,seq[j][1]);
+      digitalWrite(roPin3,seq[j][2]);
+      digitalWrite(roPin4,seq[j][3]);
+      delay(roMotorDelay);
+    }
+  }      
 }
