@@ -36,8 +36,9 @@ waitForCmd = False #to stop main until commands are executed
 waitForSerial = False #to make one serial operation at time
 
 ###Arduino Serial Port
-rootpath = "/dev/serial/by-id/"
-arduinoPort = rootpath + "usb-Arduino__www.arduino.cc__0043_95333303031351F08082-if00" #get arduino port using "ls /dev/serial/by-id"
+#rootpath = "/dev/serial/by-id/"
+#arduinoPort = rootpath + "usb-Arduino__www.arduino.cc__0043_95333303031351F08082-if00" #get arduino port using "ls /dev/serial/by-id"
+arduinoPort = "/dev/ttyACM0" #will mostly work fine
 baudRate = 9600
 
 ###Tokens
