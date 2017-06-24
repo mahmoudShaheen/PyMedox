@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
+#				  	     Bill Count							#
+#################################
+
+#bill count monitoring, updating
+
 from pythonSQL import getTotalDayBills, checkBills
 from notification import notEnoughDayBillsNotification
 

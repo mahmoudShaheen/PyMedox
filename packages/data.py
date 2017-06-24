@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
 #				 		  Data								#
- ###########################################################
+#################################
 
 #hold some data and statics for the program
 #can be accessed from all modules

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
 #				  		  Control								#
- ###########################################################
+#################################
 
 #to send sensors data to fb db 
 #also changes switches states if changed in db

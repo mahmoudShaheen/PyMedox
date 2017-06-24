@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
-#				 	 python Server							#
- ###########################################################
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
+#				 	 python Server						#
+#################################
 
 import os, sys, inspect
 

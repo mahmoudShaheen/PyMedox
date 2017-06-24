@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
-#				   Control Hardware							#
- ###########################################################
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
+#				   Control Hardware						#
+#################################
 
 from pythonSQL import *
 from notification import *
