@@ -12,7 +12,6 @@
 #	openDoor: d;							#
 #	openWarehouse: w;					#
 #	getSensorData: s;					#
-#	updateSwitch: u; 1; 2;				#
 #########################
 
 from pythonSQL import *
@@ -101,21 +100,7 @@ def getSensorData():
 #accepts boolean state, turn on/off switches
 def updateSwitch(state1, state2):
 	print "switch 1,2 should be" + state1 + ", " + state2
-	while (data.waitForSerial):
-		time.sleep(data.serialDelay)
-	data.waitForSerial = True
-	if(state1):
-		state1 = "1"
-	elif(state1):
-		state1 = "0"
-	if(state2):
-		state2 = "1"
-	elif(state2):
-		state2 = "0"
-	sendSerial("u")
-	sendSerial(state1)
-	sendSerial(state2)
-	data.waitForSerial = False
+	#TODO: RPI GPIO to 8 led matrix
 
 def callEmergencyNotification():
 	emergencyNotification()
