@@ -41,6 +41,17 @@ waitForSerial = False #to make one serial operation at time
 arduinoPort = "/dev/ttyACM0" #will mostly work fine
 baudRate = 9600
 
+###GPIO Pins
+switch1 = 2
+switch2 = 3
+switch3 = 4
+switch4 = 17
+switch5 = 27
+switch6 = 22
+switch7 = 10
+switch8 = 9
+
+
 ###Tokens
 #mobile token
 mobileToken = ""

@@ -18,6 +18,7 @@ from pythonSQL import *
 from notification import *
 from billCount import *
 from arduino import *
+from pinout import *
 import data
 import time #for time.sleep
 
@@ -98,9 +99,9 @@ def getSensorData():
 	return temp, light
 
 #accepts boolean state, turn on/off switches
-def updateSwitch(state1, state2):
-	print "switch 1,2 should be" + state1 + ", " + state2
-	#TODO: RPI GPIO to 8 led matrix
+def updateSwitch(state1, state2, state3, state4, state5, state6, state7, state8):
+	print "switch 1,2 should be " + state1 + ", " + state2 + ", " + state3 + ", " + state4 + ", " + state5 + ", " + state6 + ", " + state7 + ", " + state8
+	gpioSwitches(state1, state2, state3, state4, state5, state6, state7, state8)
 
 def callEmergencyNotification():
 	emergencyNotification()
