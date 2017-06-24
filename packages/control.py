@@ -43,6 +43,8 @@ def controlStart():
 def sendSensorDataStart():
 	threading.Timer(data.sensorDelay, sendSensorDataStart).start()
 	temperature, light = getSensorData()
+	if (temperature == False or light == False): #Refused as serial channel is used
+		return
 	temperatureJson = "{ temperature :" + temperature + "}"
 	firebase.patch(data.sensorURL, temperatureJson)
 	lightJson = "{ light :" + light + "}"
