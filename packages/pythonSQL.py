@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
-#				 python-MYSQL interface						#
- ###########################################################
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
+#				 python-MYSQL interface				#
+#################################
 
 import sqlite3
 import data #to use data using data.x 'change occurs here is limited to here'

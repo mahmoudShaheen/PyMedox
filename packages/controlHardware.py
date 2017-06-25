@@ -1,15 +1,26 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
-#				   Control Hardware							#
- ###########################################################
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
+#				   Control Hardware						#
+#################################
+
+#########################
+#serial codes								#
+#	hardwareDispense: h; 1; 2; 3; 4	#
+#	openDoor: d;							#
+#	openWarehouse: w;					#
+#	getSensorData: s;					#
+#########################
 
 from pythonSQL import *
 from notification import *
 from billCount import *
+from arduino import *
+from pinout import *
 import data
+import time #for time.sleep
 
 import subprocess #for calling restart shell script
 
@@ -34,35 +45,66 @@ def dispenseBills(rTime):
 	data.waitForDispense = False
 
 def updateTimeLCD (rTime):
-	print 'lcd time'
-	print rTime
+	#print 'lcd time'
+	#print rTime
 	#print rTime on LCD 'remaining time to next medication'
+	return
 	
 def hardwareDispense(rBills):
 	print 'hardwareDispense Called'
+	while (data.waitForSerial):
+		time.sleep(data.serialDelay)
+	data.waitForSerial = True
 	#dispense this array
+	sendSerial("h")
+	sendSerial(str(rBills[0]))
+	sendSerial(str(rBills[1]))
+	sendSerial(str(rBills[2]))
+	sendSerial(str(rBills[3]))
+	state = getSerial()
+	data.waitForSerial = False
+	if (state == "t"):
+		print 'dispense ended successfully'
+	if (state == "f"):
+		print 'dispense ended with errors'
 	
 def openDoor():
 	print 'openDoor Called'
+	while (data.waitForSerial):
+		time.sleep(data.serialDelay)
+	data.waitForSerial = True
 	#hardware openDoor
+	sendSerial("d")
+	data.waitForSerial = False
 	timerThread.cancel()
 	doorOpenedNotification()
 
 def openWarehouse():
 	print 'openWarehouse Called'
+	while (data.waitForSerial):
+		time.sleep(data.serialDelay)
+	data.waitForSerial = True
 	#hardware openWarehouse
+	sendSerial("w")
+	data.waitForSerial = False
 	warehouseOpenedNotification()
+
+#returns measurements from sensors temperature, light
+def getSensorData():
+	if(data.waitForSerial):
+		return False, False
+	sendSerial("s")
+	temp = getSerial()
+	light = getSerial()
+	return temp, light
+
+#accepts boolean state, turn on/off switches
+def updateSwitch(state1, state2, state3, state4, state5, state6, state7, state8):
+	print "switch 1,2 should be " + state1 + ", " + state2 + ", " + state3 + ", " + state4 + ", " + state5 + ", " + state6 + ", " + state7 + ", " + state8
+	gpioSwitches(state1, state2, state3, state4, state5, state6, state7, state8)
 
 def callEmergencyNotification():
 	emergencyNotification()
 
 def restartRPI():
 	subprocess.Popen("sudo ./restart.sh", shell=False)
-
-#returns measurements from sensors temperature, light
-def getSensorData():
-	return "50","70"
-
-#accepts boolean state, turn on/off switches
-def updateSwitch(state1, state2):
-	print "switch 1,2 should be" + state1 + ", " + state2

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
 #				  		  tokens								#
- ###########################################################
+#################################
 
 #to receive changes in tokens 'mobile & watch'
 

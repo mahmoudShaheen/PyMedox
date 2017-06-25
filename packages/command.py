@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
 #				  	  	Commands							#
- ###########################################################
+#################################
 
 #to receive commands and execute them
 

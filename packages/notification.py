@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
-#############################################################
-#				@author: Mahmoud Shaheen					#
-#				 MedicalBox IOT Project						#
+#################################
+#				@author: Mahmoud Shaheen			#
+#				 MedicalBox IOT Project				#
 #				  	  Notifications							#
- ###########################################################
+#################################
 
-#####################
-#notificationLevel: #
-#	0 info 			#
+###############
+#notificationLevel: 	#
+#	0 info 				#
 #	1 Emergency		#
-#	5 data			#
-#####################
+###############
 
 #to send notifications through Firebase 
 import data
