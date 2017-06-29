@@ -51,13 +51,6 @@ switch6 = 22
 switch7 = 10
 switch8 = 9
 
-
-###Tokens
-#mobile token
-mobileToken = ""
-#watch token
-watchToken = ""
-
 ###Firebase real-time database paths
 rootURL = "medox-f7251.firebaseio.com"
 messagesURL = rootURL + "/messages/.json"
@@ -68,6 +61,5 @@ sensorURL = userURL + "/iot/sensor/" + ".json"
 switchURL = userURL + "/iot/switch/" + ".json"
 timetableURL = userURL + "/timetable/" + ".json"
 warehouseURL = userURL + "/warehouse/" + ".json"
-tokenURL = userURL + "/token/" + ".json"
 dataURL = userURL + "/data/" + ".json"
 configURL = userURL + "/config/" + ".json"

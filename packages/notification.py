@@ -15,6 +15,7 @@
 #to send notifications through Firebase 
 import data
 import firebase
+import time
 	
 #to watch to open drawer
 def dispensedNotification():
@@ -67,17 +68,15 @@ def emergencyNotification():
 def sendNotification(rMessage, rLevel, rReceiver):
 	#Initialize 
 	title = "message from Box"
-	if rReceiver == "watch": #send notification to watch
-		to = data.watchToken
-	if rReceiver == "phone": #send notification to phone
-		to = data.mobileToken
+	now = time.strftime("%b %d, %Y %I:%M:%S %p")
 	
 	#creating JSON object
 	message = "{"
 	message += "message : " + rMessage + ", "
 	message += "title : " + title + ", "
+	message += "time : " + now + ", "
 	message += "level : " + str(rLevel) + ", "
-	message += "to : " + to 
+	message += "to : " + rReceiver 
 	message += "}"
 	
 	#Send message to database for cloud function to deliver

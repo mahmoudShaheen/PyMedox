@@ -13,7 +13,6 @@ sys.path.insert(0, cmd_subfolder)
 
 from pythonSQL import *
 from sync import syncStart
-from token import tokenStart
 from control import controlStart, sendSensorDataStart
 from controlHardware import *
 from billCount import *
@@ -115,7 +114,6 @@ dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 #time.sleep(data.osDelay) #wait for OS to work properly
 commandStart() #start command subscriber to execute commands as soon as it arrives in the FDB
 syncStart() #start sync subscriber to sync FDB with SQLite as soon as FDB changes 
-tokenStart()  #start token thread to update tokens as soon as FDB changes 
 controlStart() #start control thread to update switches states as soon as FDB changes 
 sendSensorDataStart() #send sensor data to db every data.sensorDelay seconds
 checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
