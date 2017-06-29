@@ -1,9 +1,0 @@
-install usb cam program
-sudo apt-get install fswebcam
-
-add excute bit to script
-chmod +x ./cam.sh
-chmod +x ./restart.sh
-
-to call the script
-./script.sh
