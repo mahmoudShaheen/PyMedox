@@ -53,9 +53,9 @@ switch8 = 9
 
 ###Firebase real-time database paths
 rootURL = "medox-f7251.firebaseio.com"
-messagesURL = userURL + "/notification/.json"
 UID = "Vbxp1DKBbMckkknNyDW0c0IGEYa2"
 userURL = rootURL + "/users/" + UID
+messagesURL = userURL + "/notification/.json"
 commandURL = userURL + "/command/" + ".json"
 sensorURL = userURL + "/iot/sensor/" + ".json"
 switchURL = userURL + "/iot/switch/" + ".json"

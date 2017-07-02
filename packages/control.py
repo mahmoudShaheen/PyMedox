@@ -21,7 +21,7 @@ import firebase
 import data
 
 def getValues(): #called when prog start, connectivity returns, subscribe event
-	rcvData = firebase.get(data.commandURL) #get switches states from FDB
+	rcvData = firebase.get(data.switchURL) #get switches states from FDB
 	if rcvData is not None: #if the class is empty the parsed data is None
 		io = StringIO
 		states = json.dumps(rcvData, io) #convert data to string instead of list
