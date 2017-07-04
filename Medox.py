@@ -66,7 +66,7 @@ def schedulerJob():
 def mainProgram():
 	while (True):
 		time.sleep(data.mainLoopDelay) #to avoid errors and save resources
-		if (not waitForSync) or (not waitForCmd): #if sync and commands threads aren't changing anything do the following
+		if (not data.waitForSync) or (not data.waitForCmd): #if sync and commands threads aren't changing anything do the following
 
 			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
 
