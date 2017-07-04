@@ -11,7 +11,6 @@ import data #to use data using data.x 'change occurs here is limited to here'
 from time import strftime
 import datetime
 import time
-import unicodedata
 
 #Get current time "returns hours, minutes"
 def getCTime():
@@ -37,8 +36,7 @@ def getNextSchedule():
 	timeArray = []
 	while (tempTime is not None):
 		tempTime = tempTime[0]
-		uncoded = unicodedata.normalize('NFKD', tempTime).encode('ascii','ignore') #convert received Unicode to string
-		h,m,s = uncoded.split(':') #split the time string by ':'
+		h,m,s = tempTime.split(':') #split the time string by ':'
 		tempTime = datetime.timedelta(hours=int(h),minutes=int(m),seconds=int(s)) #convert h,m,s to ints then to timedelta object
 		timeArray.append(tempTime)
 		tempTime = curs.fetchone()

@@ -25,43 +25,43 @@ def dispensedNotification():
 	sendNotification(message, level, receiver)
 
 ##########
-#to phone#
+#to mobile#
 ##########
 def doorOpenedNotification():
 	message = "Drawer opened!"
 	level = 0
-	receiver = "phone"
+	receiver = "mobile"
 	sendNotification(message, level, receiver)
 	
 def doorNotOpenedNotification():
 	message = "Drawer NOT opened!"
 	level = 1
-	receiver = "phone"
+	receiver = "mobile"
 	sendNotification(message, level, receiver)
 
 
 def warehouseOpenedNotification():
 	message = "warehouse opened!"
 	level = 1
-	receiver = "phone"
+	receiver = "mobile"
 	sendNotification(message, level, receiver)
 
 def notEnoughBillsNotification():
-	message = "No enough Bills!"
+	message = "No enough Pills!"
 	level = 1
-	receiver = "phone"
+	receiver = "mobile"
 	sendNotification(message, level, receiver)
 	
 def notEnoughDayBillsNotification():
-	message = "Bills aren't enough for one day'!"
+	message = "Pills aren't enough for one day'!"
 	level = 1
-	receiver = "phone"
+	receiver = "mobile"
 	sendNotification(message, level, receiver)
 
 def emergencyNotification():
 	message = "emergency"
 	level = 1
-	receiver = "phone"
+	receiver = "mobile"
 	sendNotification(message, level, receiver)
  
  #send notification to database and update notification status by call statusNotificationUpdate
@@ -71,13 +71,12 @@ def sendNotification(rMessage, rLevel, rReceiver):
 	now = time.strftime("%b %d, %Y %I:%M:%S %p")
 	
 	#creating JSON object
-	message = "{"
-	message += "message : " + rMessage + ", "
-	message += "title : " + title + ", "
-	message += "time : " + now + ", "
-	message += "level : " + str(rLevel) + ", "
-	message += "to : " + rReceiver 
-	message += "}"
+	message = {}
+	message["message"]= rMessage
+	message["title"] = title
+	message["time"] = now
+	message["level"] = str(rLevel)
+	message["to"] = rReceiver 
 	
 	#Send message to database for cloud function to deliver
 	firebase.push(data.messagesURL, message)

@@ -27,7 +27,7 @@ import subprocess #for calling restart shell script
 import threading #for timer thread
 import datetime #for datetime.timedelta
 doorDelay = datetime.timedelta(minutes=5,seconds=0) #5 minutes then send door not opened notification
-timerThread = threading.Timer(doorDelay, target=doorNotOpenedNotification) #to check if door not opened for 5 minutes
+timerThread = threading.Timer(doorDelay, doorNotOpenedNotification) #to check if door not opened for 5 minutes
 
 def dispenseBills(rTime):
 	print 'dispensing Bills Called'
@@ -51,7 +51,7 @@ def updateTimeLCD (rTime):
 	return
 	
 def hardwareDispense(rBills):
-	print 'hardwareDispense Called'
+	print 'hardwareDispense Called for ' + str(rBills[0]) + ", "  + str(rBills[1]) + ", "  + str(rBills[2]) + ", " + str(rBills[3])  
 	while (data.waitForSerial):
 		time.sleep(data.serialDelay)
 	data.waitForSerial = True
@@ -62,11 +62,11 @@ def hardwareDispense(rBills):
 	sendSerial(str(rBills[2]))
 	sendSerial(str(rBills[3]))
 	state = getSerial()
-	data.waitForSerial = False
 	if (state == "t"):
 		print 'dispense ended successfully'
 	if (state == "f"):
 		print 'dispense ended with errors'
+	data.waitForSerial = False
 	
 def openDoor():
 	print 'openDoor Called'
@@ -91,16 +91,17 @@ def openWarehouse():
 
 #returns measurements from sensors temperature, light
 def getSensorData():
-	if(data.waitForSerial):
-		return False, False
-	sendSerial("s")
-	temp = getSerial()
-	light = getSerial()
-	return temp, light
+	#if(data.waitForSerial):
+	#	return False, False
+	#sendSerial("s")
+	#temp = getSerial()
+	#light = getSerial()
+	#return temp, light
+	return "100", "100"
 
 #accepts boolean state, turn on/off switches
 def updateSwitch(state1, state2, state3, state4, state5, state6, state7, state8):
-	print "switch 1,2 should be " + state1 + ", " + state2 + ", " + state3 + ", " + state4 + ", " + state5 + ", " + state6 + ", " + state7 + ", " + state8
+	print "switches should be " + str(state1) + ", " +  str(state2)  + ", " +  str(state3)  + ", " +  str(state4)  + ", " +  str(state5)  + ", " +  str(state6)  + ", " +  str(state7)  + ", " +  str(state8) 
 	gpioSwitches(state1, state2, state3, state4, state5, state6, state7, state8)
 
 def callEmergencyNotification():

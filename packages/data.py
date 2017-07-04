@@ -22,7 +22,10 @@ sensorDelay = 10 #update sensor values in db every 10 seconds
 serialDelay = 1 #wait another operation on serial port to finish
 
 #SQLite database
-dbName = "../box.db"
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+dbName = os.path.join(BASE_DIR, "../box.db")
 
 #threads synchronization
 schedulerCheck = False #to check if the scheduler finishes
