@@ -22,12 +22,6 @@ sensorDelay = 10 #update sensor values in db every 10 seconds
 serialDelay = 1 #wait another operation on serial port to finish
 
 dispense = False
-#SQLite database
-import os.path
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-dbName = os.path.join(BASE_DIR, "../box.db")
-
 #threads synchronization
 schedulerCheck = False #to check if the scheduler finishes
 scheduleChanged = True #to stop the tread 'scheduler' and start again if user changed the schedule or dispense completed
@@ -38,6 +32,11 @@ schedulerAlive = False #is_alive isn't working
 waitForSync = False #to stop main until db is updated
 waitForCmd = False #to stop main until commands are executed
 waitForSerial = False #to make one serial operation at time
+#SQLite database
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+dbName = os.path.join(BASE_DIR, "../box.db")
 
 ###Arduino Serial Port
 #rootpath = "/dev/serial/by-id/"
