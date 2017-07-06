@@ -69,46 +69,42 @@ def schedulerJob():
 
 def mainProgram():
 	while (True):
-		#time.sleep(data.mainLoopDelay) #to avoid errors and save resources
-		if (not data.waitForSync) or (not data.waitForCmd) or (not data.waitForDispense): #if sync and commands threads aren't changing anything do the following
-			#print "\n\n\n\n\n\n\n\n\n\n"
-			if(data.dispense):
-				print "inside if "
-				data.dispense
-				data.schedulerCheck = True
-				data.dispense = False
-				schedulerThread.cancel()
-				data.schedulerAlive = False
-				print "scheduler Cancelled"
-				print "schedulerCheck: "
-				print data.schedulerCheck
-				print "dispense: "
-				print data.dispense
-			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
-
-			#checks if  user changed schedule or dispense completed
-			#to reset scheduler and gets next time to start a new scheduler Thread
-			if (data.scheduleChanged == True): #if user changed schedule or dispense completed
-				# A) stop current SchedulerThread
-				if (data.schedulerAlive):
+		time.sleep(data.mainLoopDelay) #to avoid errors and save resources
+		if(not data.emptyTimetable) and (not data.emptyWarehouse): #if timetable isn't marked empty && warehouse has enough bills
+			if (not data.waitForSync) and (not data.waitForCmd) and (not data.waitForDispense): #if sync and commands threads aren't changing anything do the following
+				if(data.dispense):
+					data.dispense
+					data.schedulerCheck = True
+					data.dispense = False
 					schedulerThread.cancel()
-					#schedulerThread.join()
 					data.schedulerAlive = False
-					print "scheduler Cancelled"
-				nTime = getNextSchedule() # B) get next Time
-				# C) checks if timetable has entries
-				if (nTime == False): #if it has no entries: set data.emptyTimetable to stop the checking process
-					data.emptyTimetable = True
-				else: #if it has entries: re-set data.emptyTimetable to re-start the checking process
-					data.emptyTimetable = False
-				# D) reset scheduler Variables to start new schedulerThread
-				data.schedulerCheck = False #re-set data.schedulerCheck as false
-				data.scheduleChanged = False #re-set data.scheduleChanged status to false
-			
-			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
-			
-			#scheduler handling
-			if (not data.emptyTimetable and not data.waitForDispense): #if timetable isn't marked empty && no dispensing is running
+					print "dispenseNext command detected, scheduler Cancelled"
+					print "schedulerCheck: ", data.schedulerCheck
+					print "dispenseNext: ", data.dispense
+					
+				##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
+
+				#checks if  user changed schedule or dispense completed
+				#to reset scheduler and gets next time to start a new scheduler Thread
+				if (data.scheduleChanged == True): #if user changed schedule or dispense completed
+					# A) stop current SchedulerThread
+					if (data.schedulerAlive):
+						schedulerThread.cancel()
+						#schedulerThread.join()
+						data.schedulerAlive = False
+						print "scheduler Cancelled"
+					nTime = getNextSchedule() # B) get next Time
+					# C) checks if timetable has entries
+					if (nTime == False): #if it has no entries: set data.emptyTimetable to stop the checking process
+						data.emptyTimetable = True
+
+					# D) reset scheduler Variables to start new schedulerThread
+					data.schedulerCheck = False #re-set data.schedulerCheck as false
+					data.scheduleChanged = False #re-set data.scheduleChanged status to false
+				
+				##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
+				
+				#scheduler handling
 				if(data.schedulerCheck == False): #thread not marked finished
 					delayToNextDispense = timeDiff(nTime)
 					if (data.schedulerAlive):	#but alive -> do other work 
@@ -124,12 +120,17 @@ def mainProgram():
 					data.schedulerCheck = False
 					data.scheduleChanged = True #to call scheduler for next time
 			
-			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
+				##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
+			else:
+				print "main waiting"
+				print "waitForCmd: ", data.waitForCmd
+				print "waitForSync" , data.waitForSync
+				print "waitForDispense" , data.waitForDispense
 		else:
-			print "main waiting"
-			print "waitForCmd: ", waitForCmd
-			print "waitForSync" , waitForSync
-			print "waitForDispense" , waitForDispense
+			print "main waiting: Empty"
+			print "emptyTimetable: ", data.emptyTimetable
+			print "emptyWarehouse" , data.emptyWarehouse
+				
 #defines global variables used in the program,
 schedulerThread = threading.Timer(60, schedulerJob)
 dispenseThread = threading.Thread(target=dispenseBills, args='0:0')

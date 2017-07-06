@@ -34,14 +34,26 @@ def dispenseBills(rTime):
 	data.waitForDispense = True
 	bills = getBills(rTime)
 	check = checkBills(bills)
-	if (not check):
+	if (not check): #no enough pills for this schedule
 		notEnoughBillsNotification()
+		print "no enough pills for this schedule"
+		data.waitForDispense = False
+		data.emptyWarehouse = True
+		return
 	hardwareDispense(bills)
 	markDispensed(rTime)
 	subtractBills(bills)
 	dispensedNotification()
 	checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
-	timerThread.start()
+	try:
+		timerThread.cancel()
+	except:
+		print "trying to cancel not started thread: doorThread"
+	try:
+		timerThread = threading.Timer(doorDelay, doorNotOpenedNotification) #to check if door not opened for 5 minutes
+		timerThread.start()
+	except:
+		print "door thread at dispenseBills Exception"
 	data.waitForDispense = False
 
 def updateTimeLCD (rTime):

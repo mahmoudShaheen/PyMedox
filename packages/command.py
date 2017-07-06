@@ -45,6 +45,7 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 		clearBills()
 	
 	if(command == "addBills"): #add received bill count to original count
+		data.emptyWarehouse = False
 		billsArray = [int(i) for i in commandList]
 		print billsArray
 		addBills(billsArray)

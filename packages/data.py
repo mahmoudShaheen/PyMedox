@@ -26,12 +26,14 @@ dispense = False
 schedulerCheck = False #to check if the scheduler finishes
 scheduleChanged = True #to stop the tread 'scheduler' and start again if user changed the schedule or dispense completed
 emptyTimetable = False #check if the table is empty
+emptyWarehouse = False #check if warehouse is empty
 waitForDispense = False #to stop scheduler until dispensing process finishes "added to complete other tasks while dispensing process is running"
 schedulerAlive = False #is_alive isn't working
 
-waitForSync = False #to stop main until db is updated
+waitForSync = True #to stop main until db is updated
 waitForCmd = False #to stop main until commands are executed
 waitForSerial = False #to make one serial operation at time
+
 #SQLite database
 import os.path
 

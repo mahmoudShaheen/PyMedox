@@ -40,6 +40,7 @@ def syncNow(args):
 	data.waitForSync = True
 	syncdb()
 	data.scheduleChanged = True
+	data.emptyTimetable = False
 	data.waitForSync = False
 
 def syncStart():

@@ -47,7 +47,7 @@ def warehouseOpenedNotification():
 	sendNotification(message, level, receiver)
 
 def notEnoughBillsNotification():
-	message = "No enough Pills!"
+	message = "Dispensing Stopped, No enough Pills!"
 	level = 1
 	receiver = "mobile"
 	sendNotification(message, level, receiver)
