@@ -21,7 +21,7 @@ def syncdb():
 	if newTimetable is not None: #if the class is empty the parsed data is None
 		timeArray = [] #for time values
 		drugArray = [] #for drug Array
-		print newTimetable
+		#print newTimetable
 		for key, value in newTimetable.iteritems():
 			timeArray.append(str(value['time']))
 			drugArray.append(str(value['billArray']))

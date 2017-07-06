@@ -43,7 +43,7 @@ def getNextSchedule():
 	close(db)
 	if (len(timeArray) == 0): #return false if timetable is empty
 		return False
-	print "time array:\n" , timeArray
+	#print "time array:\n" , timeArray
 	if(len(timeArray) > 0 ):
 		if (rTime > timeArray[-1]): #if currentTime > last item in ordered array "dispensing finished for today"
 			print"min: ",  timeArray[0]
