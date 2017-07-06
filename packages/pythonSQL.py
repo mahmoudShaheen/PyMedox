@@ -122,6 +122,7 @@ def resetDispensed():
 	close(db)
 
 def isDispensed(rTime):
+	rTime = addZero(rTime)
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
 	sql = """SELECT `dispensed` FROM `timetable`
@@ -210,3 +211,10 @@ def getTotalDayBills():
 		totalBills = [x + y for x, y in zip(totalBills, bills)]
 		billString = curs.fetchone()
 	return totalBills
+
+def addZero(rTime):
+	h, m, s = rTime.split(":")
+	h = int(h)
+	if(h < 10):
+		rTime = "0" + rTime
+	return rTime
