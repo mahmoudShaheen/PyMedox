@@ -65,8 +65,8 @@ def schedulerJob():
 
 def mainProgram():
 	while (True):
-		time.sleep(data.mainLoopDelay) #to avoid errors and save resources
-		if (not data.waitForSync) or (not data.waitForCmd): #if sync and commands threads aren't changing anything do the following
+		#time.sleep(data.mainLoopDelay) #to avoid errors and save resources
+		if (not data.waitForSync) or (not data.waitForCmd) or (not data.waitForDispense): #if sync and commands threads aren't changing anything do the following
 			#print "\n\n\n\n\n\n\n\n\n\n"
 			if(data.dispense):
 				print "inside if "
@@ -121,7 +121,11 @@ def mainProgram():
 					data.scheduleChanged = True #to call scheduler for next time
 			
 			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
-
+		else:
+			print "main waiting"
+			print "waitForCmd: ", waitForCmd
+			print "waitForSync" , waitForSync
+			print "waitForDispense" , waitForDispense
 #defines global variables used in the program,
 schedulerThread = threading.Timer(60, schedulerJob)
 dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
@@ -130,7 +134,7 @@ dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 commandStart() #start command subscriber to execute commands as soon as it arrives in the FDB
 syncStart() #start sync subscriber to sync FDB with SQLite as soon as FDB changes 
 #time.sleep(60)
-controlStart() #start control thread to update switches states as soon as FDB changes 
-sendSensorDataStart() #send sensor data to db every data.sensorDelay seconds
-checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
+#controlStart() #start control thread to update switches states as soon as FDB changes 
+#sendSensorDataStart() #send sensor data to db every data.sensorDelay seconds
+#checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
 mainProgram() #call main program
