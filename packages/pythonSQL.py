@@ -22,6 +22,8 @@ def getCTime():
 
 #Get the next time bills will be dispensed
 def getNextSchedule():
+	if(checkEmptyTimetable()):
+		return False
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
 	hmTime=getCTime()
@@ -29,7 +31,7 @@ def getNextSchedule():
 	m=int(hmTime[1])
 	s=int(hmTime[2])
 	rTime=datetime.timedelta(hours=h,minutes=m,seconds=s)
-	sql = """SELECT `time` FROM `timetable`
+	sql = """SELECT `time` FROM `timetable` where `dispensed` = "0"
 		ORDER BY `time` ASC"""
 	curs.execute(sql)
 	tempTime = curs.fetchone()
@@ -55,6 +57,31 @@ def getNextSchedule():
 					print"row: " , row
 					return str(row)
 	return false;
+
+#return whether timetable is empty or not
+def checkEmptyTimetable():
+	db = sqlite3.connect(data.dbName)
+	curs = db.cursor()
+	hmTime=getCTime()
+	h=int(hmTime[0])
+	m=int(hmTime[1])
+	s=int(hmTime[2])
+	rTime=datetime.timedelta(hours=h,minutes=m,seconds=s)
+	sql = """SELECT `time` FROM `timetable`
+		ORDER BY `time` ASC"""
+	curs.execute(sql)
+	tempTime = curs.fetchone()
+	timeArray = []
+	while (tempTime is not None):
+		tempTime = tempTime[0]
+		h,m,s = tempTime.split(':') #split the time string by ':'
+		tempTime = datetime.timedelta(hours=int(h),minutes=int(m),seconds=int(s)) #convert h,m,s to ints then to timedelta object
+		timeArray.append(tempTime)
+		tempTime = curs.fetchone()
+	close(db)
+	if (len(timeArray) == 0): #return True if timetable is empty
+		return True
+	return False
 
 #returns array of number of bills for every warehouse medicine which should be dispensed
 def getBills(rTime):
