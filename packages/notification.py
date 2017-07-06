@@ -68,7 +68,13 @@ def emergencyNotification():
 def sendNotification(rMessage, rLevel, rReceiver):
 	#Initialize 
 	title = "message from Box"
+	#time format
+	#jul 06, 2017 08:05:01 PM to jul 6, 2017 8:05:01 PM
 	now = time.strftime("%b %d, %Y %I:%M:%S %p")
+	if(now[13] == "0"):
+		now = now[:13] + now[14:]
+	if(now[4] == "0"):
+		now = now[:4] + now[5:]
 	
 	#creating JSON object
 	message = {}
