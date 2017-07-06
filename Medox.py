@@ -76,6 +76,9 @@ def mainProgram():
 				# A) stop current SchedulerThread
 				if (data.schedulerAlive):
 					schedulerThread.cancel()
+					#schedulerThread.join()
+					data.schedulerAlive = False
+					print "scheduler Cancelled"
 				nTime = getNextSchedule() # B) get next Time
 				# C) checks if timetable has entries
 				if (nTime == False): #if it has no entries: set data.emptyTimetable to stop the checking process
@@ -108,12 +111,13 @@ def mainProgram():
 			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
 
 #defines global variables used in the program,
-schedulerThread = threading.Thread(target=schedulerJob)
+schedulerThread = threading.Timer(60, schedulerJob)
 dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 
 #time.sleep(data.osDelay) #wait for OS to work properly
 commandStart() #start command subscriber to execute commands as soon as it arrives in the FDB
 syncStart() #start sync subscriber to sync FDB with SQLite as soon as FDB changes 
+#time.sleep(60)
 controlStart() #start control thread to update switches states as soon as FDB changes 
 sendSensorDataStart() #send sensor data to db every data.sensorDelay seconds
 checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
