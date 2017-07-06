@@ -26,7 +26,7 @@ import subprocess #for calling restart shell script
 
 import threading #for timer thread
 import datetime #for datetime.timedelta
-doorDelay = datetime.timedelta(minutes=5,seconds=0) #5 minutes then send door not opened notification
+doorDelay = 5*60 #5 minutes then send door not opened notification
 timerThread = threading.Timer(doorDelay, doorNotOpenedNotification) #to check if door not opened for 5 minutes
 
 def dispenseBills(rTime):
@@ -70,6 +70,10 @@ def hardwareDispense(rBills):
 	
 def openDoor():
 	print 'openDoor Called'
+	try:
+		timerThread.cancel()
+	except:
+		print "trying to cancel not started thread: doorThread"
 	while (data.waitForSerial):
 		time.sleep(data.serialDelay)
 	data.waitForSerial = True

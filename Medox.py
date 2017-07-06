@@ -50,6 +50,10 @@ def callDispenseBills(rTime):
 #schedulerThread:: after a delay it calls schedulerJob
 #the delay is time to the next schedule
 def callSchedulerThread(rTime):
+	try:
+		schedulerThread.cancel()
+	except:
+		print "trying to cancel not started thread: SchedulerThread"
 	print 'call SchedulerThread Time: ', rTime
 	data.schedulerAlive = True
 	schedulerThread = threading.Timer(rTime, schedulerJob)

@@ -93,7 +93,7 @@ def getBills(rTime):
 		WHERE `time` = '%s' """ % (rTime)
 	curs.execute(sql)
 	billString = curs.fetchone()
-	if(not billArray is None):
+	if(not billString is None):
 		billString = billString[0]
 		billArray = billString.split(",") #convert string to array by separator ","
 		bills = [int(i) for i in billArray] #convert the string array to int array
@@ -136,6 +136,7 @@ def subtractBills(bills): #update bill_count after dispensing, accepts array of 
 	close(db)
 
 def markDispensed(rTime): #mark a time as dispensed
+	rTime = addZero(rTime)
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()	
 	sql = """UPDATE timetable SET  
@@ -145,6 +146,7 @@ def markDispensed(rTime): #mark a time as dispensed
 	close(db)
 
 def resetDispensed():
+	print "resetDispensed called"
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
 	sql = """UPDATE `timetable` SET	
