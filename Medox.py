@@ -16,7 +16,7 @@ from sync import syncStart
 from control import controlStart, sendSensorDataStart
 from controlHardware import *
 from billCount import *
-from command import commandStart
+from command import *
 import data
 
 import threading
@@ -67,7 +67,19 @@ def mainProgram():
 	while (True):
 		time.sleep(data.mainLoopDelay) #to avoid errors and save resources
 		if (not data.waitForSync) or (not data.waitForCmd): #if sync and commands threads aren't changing anything do the following
-
+			#print "\n\n\n\n\n\n\n\n\n\n"
+			if(data.dispense):
+				print "inside if "
+				data.dispense
+				data.schedulerCheck = True
+				data.dispense = False
+				schedulerThread.cancel()
+				data.schedulerAlive = False
+				print "scheduler Cancelled"
+				print "schedulerCheck: "
+				print data.schedulerCheck
+				print "dispense: "
+				print data.dispense
 			##################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##################################################
 
 			#checks if  user changed schedule or dispense completed

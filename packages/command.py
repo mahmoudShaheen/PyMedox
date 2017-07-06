@@ -30,7 +30,7 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 		openWarehouse()
 	
 	if(command == "dispenseNext"): #dispense next now
-		data.schedulerCheck == True #tells main that the scheduler timer has finished so it dispense next
+		data.dispense = True
 	
 	if(command == "dispense"): #dispense drugs
 		billsArray = [int(i) for i in commandList]

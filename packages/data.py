@@ -21,6 +21,7 @@ mainLoopDelay = 1 #can't be more as it does other work like updateLCD
 sensorDelay = 10 #update sensor values in db every 10 seconds
 serialDelay = 1 #wait another operation on serial port to finish
 
+dispense = False
 #SQLite database
 import os.path
 
