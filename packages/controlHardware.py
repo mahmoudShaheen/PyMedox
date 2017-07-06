@@ -37,7 +37,7 @@ def dispenseBills(rTime):
 	if (not check):
 		notEnoughBillsNotification()
 	hardwareDispense(bills)
-	markDispensed(rtime)
+	markDispensed(rTime)
 	subtractBills(bills)
 	dispensedNotification()
 	checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
