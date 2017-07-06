@@ -85,6 +85,7 @@ def checkEmptyTimetable():
 
 #returns array of number of bills for every warehouse medicine which should be dispensed
 def getBills(rTime):
+	rTime = addZero(rTime)
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
 
@@ -92,9 +93,12 @@ def getBills(rTime):
 		WHERE `time` = '%s' """ % (rTime)
 	curs.execute(sql)
 	billString = curs.fetchone()
-	billString = billString[0]
-	billArray = billString.split(",") #convert string to array by separator ","
-	bills = [int(i) for i in billArray] #convert the string array to int array
+	if(not billArray is None):
+		billString = billString[0]
+		billArray = billString.split(",") #convert string to array by separator ","
+		bills = [int(i) for i in billArray] #convert the string array to int array
+	else:
+		bills = [0,0,0,0] 
 	close(db)
 	return bills
 
