@@ -30,7 +30,7 @@ emptyWarehouse = False #check if warehouse is empty
 waitForDispense = False #to stop scheduler until dispensing process finishes "added to complete other tasks while dispensing process is running"
 schedulerAlive = False #is_alive isn't working
 
-waitForSync = True #to stop main until db is updated
+waitForSync = False #to stop main until db is updated
 waitForCmd = False #to stop main until commands are executed
 waitForSerial = False #to make one serial operation at time
 
