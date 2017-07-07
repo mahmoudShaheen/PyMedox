@@ -67,6 +67,13 @@ def schedulerJob():
 	data.schedulerAlive = False
 	print 'scheduler job called'
 
+#checks if timetable is empty "used atStart"
+def checkEmptyTimetable():
+	nTime = getNextSchedule() # B) get next Time
+	# C) checks if timetable has entries
+	if (nTime == False): #if it has no entries: set data.emptyTimetable to stop the checking process
+		data.emptyTimetable = True
+
 def mainProgram():
 	while (True):
 		time.sleep(data.mainLoopDelay) #to avoid errors and save resources
@@ -136,6 +143,7 @@ schedulerThread = threading.Timer(60, schedulerJob)
 dispenseThread = threading.Thread(target=dispenseBills, args='0:0')
 
 #time.sleep(data.osDelay) #wait for OS to work properly
+checkEmptyTimetable() #checks if timetable is empty
 commandStart() #start command subscriber to execute commands as soon as it arrives in the FDB
 syncStart() #start sync subscriber to sync FDB with SQLite as soon as FDB changes 
 #time.sleep(60)
