@@ -105,7 +105,7 @@ def openWarehouse():
 	data.waitForSerial = False
 	warehouseOpenedNotification()
 
-def openWarehouse():
+def closeWarehouse():
 	print 'closeWarehouse Called'
 	while (data.waitForSerial):
 		time.sleep(data.serialDelay)
