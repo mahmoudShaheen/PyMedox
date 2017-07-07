@@ -37,4 +37,4 @@ def getSerial():
 	#line = line.decode("utf-8")  #removes b at the start of the string "converts byte to string"
 	#print "serial received: ", line
 	#return line
-	return t
+	return "t"
