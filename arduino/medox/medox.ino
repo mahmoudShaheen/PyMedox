@@ -6,27 +6,29 @@
 
 //Arduino Pins definition
 //stepper-1 "up/down" pump
-#define    upPin1       2
-#define    upPin2       3
-#define    upPin3       4
-#define    upPin4       5
+#define    upPin1       4
+#define    upPin2       5
+#define    upPin3       6
+#define    upPin4       7
 //stepper-2 "rotation" plate
-#define    roPin1       6
-#define    roPin2       7
-#define    roPin3       8
-#define    roPin4       9
+#define    roPin1       8
+#define    roPin2       9
+#define    roPin3       10
+#define    roPin4       11
 //other outputs
-#define    drawer       10
-#define    warehouse    11
-#define    pump         12
+#define    drawer       12
+#define    warehouse    13
+#define    pump         A0 //used as digital O/P as digital pins are all used
 //sensors
-#define    infrared     13
-#define    current      A0
-#define    temperature  A1
-#define    lightLevel   A2
+#define    infrared     2  //interrupt pin
+#define    doorSwitch   3  //interrupt pin
+#define    current      A1
+#define    temperature  A2
+#define    lightLevel   A3
+//limits for initialization
+#define    trayLimit    A4
+#define    upLimit      A5
 
-#define    doorDelay        1000 //time to keep door motor working
-#define    warehouseDelay   1000 //time to keep warehouse motor working
 #define    releaseBillDelay 1000 //to wait untill bill released
 #define    getBillDelay     1000 //to wait until bill catched for sure
 #define    upStepperDelay   3    //to wait before up/down steps
@@ -34,8 +36,17 @@
 
 #define    currentThreeshold 5    //current where pump gets a bill
 #define    currentOffset     2    //offset for current sensor
-#define    maxUpSteps        100  //maximum number of steps pump should move
+#define    maxUpSteps        20   //maximum number of steps pump should move
 #define    step72            10   //steps required to rotate 72 degrees
+
+//servo constants
+#include <Servo.h> 
+Servo drawerServo;// create servo object to control a servo
+Servo warehouseServo;// create servo object to control a servo
+#define drawerServoOpen     10
+#define drawerServoClose    100
+#define WarehouseServoOpen  10
+#define WarehouseServoClose 100
 
 //variables definition
 char  serialData;             //for storing serial string
@@ -56,6 +67,9 @@ int seq[8][4]={ {1,0,0,0},
 
 void setup() {
   //Setting input/output Pins
+  //servos
+  drawerServo.attach(drawer);        // attaches the doorServo on pin Arduino pin
+  warehouseServo.attach(warehouse);  // attaches the warehouseServo on pin Arduino pin
   //outputs
   pinMode(  upPin1,     OUTPUT);
   pinMode(  upPin2,     OUTPUT);
@@ -65,16 +79,22 @@ void setup() {
   pinMode(  roPin2,     OUTPUT);
   pinMode(  roPin3,     OUTPUT);
   pinMode(  roPin4,     OUTPUT);
-  pinMode(  drawer,     OUTPUT);
-  pinMode(  warehouse,  OUTPUT);
   pinMode(  pump,       OUTPUT);
   //inputs
   pinMode(  infrared,    INPUT);
+  pinMode(  doorSwitch,  INPUT);
   pinMode(  current,     INPUT);
   pinMode(  temperature, INPUT);
   pinMode(  lightLevel,  INPUT);
   //initialize Serial Communication to communicate with RPI, with Baud rate=9600
   Serial.begin(9600);
+  
+  //define drawer limit switch pin as interrupt pin to secure drawer automatically
+  attachInterrupt(digitalPinToInterrupt(doorSwitch), closeDoor, RISING);
+  
+  pinMode(  trayLimit,  INPUT);
+  pinMode(  upLimit,    INPUT);
+  initialization();
 }
 
 //Check serial buffer for any strings from RPI and call Corresponding Function
@@ -89,21 +109,48 @@ void loop() {
       openWarehouse();
     else if(serialData == 's')
       sendSensorData();
+    else if(serialData == 'c')
+      closeWarehouse();
   }
 }
 
+void initialization(){
+  while(digitalRead(upLimit) != HIGH){//move up motor to initial place
+    for(int i = 0; i <= 7; i++){
+      digitalWrite(upPin1, seq[i][0]);
+      digitalWrite(upPin2, seq[i][1]);
+      digitalWrite(upPin3, seq[i][2]);
+      digitalWrite(upPin4, seq[i][3]);
+      delay(upStepperDelay);
+    }
+  }
+  while(digitalRead(trayLimit) != HIGH){//move tray motor to initial place
+    for(int i = 0; i <= 7; i++){
+      digitalWrite(roPin1, seq[i][0]);
+      digitalWrite(roPin2, seq[i][1]);
+      digitalWrite(roPin3, seq[i][2]);
+      digitalWrite(roPin4, seq[i][3]);
+      delay(roStepperDelay);
+    }
+  }
+  stopMotors();
+}
+
 void openDoor(){
-  digitalWrite(drawer, HIGH);
-  delay(doorDelay);
-  digitalWrite(drawer, LOW);
+  drawerServo.write(drawerServoOpen);
 }
 
 void openWarehouse(){
-  digitalWrite(warehouse, HIGH);
-  delay(warehouseDelay);
-  digitalWrite(warehouse, LOW);
+  warehouseServo.write(WarehouseServoOpen);
 }
 
+void closeDoor(){
+  drawerServo.write(drawerServoClose);
+}
+
+void closeWarehouse(){
+  warehouseServo.write(WarehouseServoClose);
+}
 
 void sendSensorData(){
   tempFloat = analogRead(temperature);
@@ -164,10 +211,9 @@ void hardwareDispense(){
   //check number of dispensed bills
   if(billCount == total)
     Serial.print("t");
-	Serial.print("\r\n");
   else if(billCount != total)
     Serial.print("f");
-	Serial.print("\r\n");
+  Serial.print("\r\n");
   billCount = 0; //resets billCount
 }
 
@@ -215,10 +261,10 @@ void releaseBill(){
 void moveOneStep(){
   for(int i = 0; i < step72; i++){
     for(int j = 0; j <= 7; j++){
-      digitalWrite(upPin1, seq[i][0]);
-      digitalWrite(upPin2, seq[i][1]);
-      digitalWrite(upPin3, seq[i][2]);
-      digitalWrite(upPin4, seq[i][3]);
+      digitalWrite(roPin1, seq[j][0]);
+      digitalWrite(roPin2, seq[j][1]);
+      digitalWrite(roPin3, seq[j][2]);
+      digitalWrite(roPin4, seq[j][3]);
       delay(roStepperDelay);
     }
   }
