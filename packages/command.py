@@ -29,6 +29,9 @@ def execCommand(rCommand): #each command in the array should be "command,arg1,ar
 	if(command == "openWarehouse"): #open warehouse
 		openWarehouse()
 	
+	if(command == "closeWarehouse"): #close warehouse
+		closeWarehouse()
+	
 	if(command == "dispenseNext"): #dispense next now
 		data.dispense = True
 	

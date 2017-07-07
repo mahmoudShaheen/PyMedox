@@ -105,6 +105,15 @@ def openWarehouse():
 	data.waitForSerial = False
 	warehouseOpenedNotification()
 
+def openWarehouse():
+	print 'closeWarehouse Called'
+	while (data.waitForSerial):
+		time.sleep(data.serialDelay)
+	data.waitForSerial = True
+	#hardware openWarehouse
+	sendSerial("c")
+	data.waitForSerial = False
+	
 #returns measurements from sensors temperature, light
 def getSensorData():
 	#if(data.waitForSerial):
