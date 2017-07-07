@@ -41,9 +41,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 dbName = os.path.join(BASE_DIR, "../box.db")
 
 ###Arduino Serial Port
-#rootpath = "/dev/serial/by-id/"
-#arduinoPort = rootpath + "usb-Arduino__www.arduino.cc__0043_95333303031351F08082-if00" #get arduino port using "ls /dev/serial/by-id"
-arduinoPort = "/dev/ttyACM0" #will mostly work fine
+rootpath = "/dev/serial/by-id/"
+arduinoPort = rootpath + "usb-Arduino__www.arduino.cc__0043_95333303031351F08082-if00" #get arduino port using "ls /dev/serial/by-id"
+#arduinoPort = "/dev/ttyACM0" #will mostly work fine
 baudRate = 9600
 
 ###GPIO Pins
