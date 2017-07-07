@@ -109,9 +109,11 @@ void sendSensorData(){
   tempFloat = analogRead(temperature);
   tempFloat = tempFloat * (5 / 1024); //converting binary number to voltage (0-1024)->(0-5)
   Serial.print(tempFloat);
+  Serial.print("\r\n");
   tempFloat = analogRead(lightLevel);
   tempFloat = tempFloat * (5 / 1024); //converting binary number to voltage (0-1024)->(0-5)
   Serial.print(tempFloat);
+  Serial.print("\r\n");
 }
 
 //converting array of characters to int
@@ -162,8 +164,10 @@ void hardwareDispense(){
   //check number of dispensed bills
   if(billCount == total)
     Serial.print("t");
+	Serial.print("\r\n");
   else if(billCount != total)
     Serial.print("f");
+	Serial.print("\r\n");
   billCount = 0; //resets billCount
 }
 
