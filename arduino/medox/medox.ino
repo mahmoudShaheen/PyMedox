@@ -36,7 +36,7 @@
 
 #define    currentThreeshold 5    //current where pump gets a bill
 #define    currentOffset     2    //offset for current sensor
-#define    maxUpSteps        20   //maximum number of steps pump should move
+#define    maxUpSteps        350   //maximum number of steps pump should move 50 ----> 1 revolation 
 #define    step72            10   //steps required to rotate 72 degrees
 
 //servo constants
@@ -236,13 +236,14 @@ void moveToWarehouse(int warehouseNumber){
   for (int i = 0; i < steps; i++){ //move the required steps
     moveOneStep(); //moves 72 degree to select next warehouse
   }
+  selectedWarehouse = warehouseNumber;
 }
 
 //get one bill using pump
 void getBill(){
   int steps = 0; //for storing steps to return to initial position again
   digitalWrite(pump, HIGH); //activates the pump
-  while(getCurrent() < currentThreeshold && steps < maxUpSteps){ //go down until gets one bill
+  while(/*getCurrent() < currentThreeshold &&*/ steps < maxUpSteps){ //go down until gets one bill
     stepDown(); //move one step down
   }
   delay(getBillDelay); //to wait until bill catched for sure
