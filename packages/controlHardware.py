@@ -116,13 +116,12 @@ def closeWarehouse():
 	
 #returns measurements from sensors temperature, light
 def getSensorData():
-	#if(data.waitForSerial):
-	#	return False, False
-	#sendSerial("s")
-	#temp = getSerial()
-	#light = getSerial()
-	#return temp, light
-	return "100", "100"
+	if(data.waitForSerial):
+		return False, False
+	sendSerial("s")
+	temp = getSerial()
+	light = getSerial()
+	return temp, light
 
 #accepts boolean state, turn on/off switches
 def updateSwitch(state1, state2, state3, state4, state5, state6, state7, state8):
