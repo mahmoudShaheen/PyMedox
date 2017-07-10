@@ -13,7 +13,7 @@ import data
 import RPi.GPIO as GPIO           # import RPi.GPIO module
 GPIO.setmode(GPIO.BCM)            # choose BCM or BOARD
 GPIO.setwarnings(False)
-set a pins as an output
+#set a pins as an output
 GPIO.setup(data.switch1, GPIO.OUT)
 GPIO.setup(data.switch2, GPIO.OUT)
 GPIO.setup(data.switch3, GPIO.OUT)
