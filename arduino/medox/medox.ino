@@ -29,7 +29,7 @@
 #define    trayLimit    A4
 #define    upLimit      A5
 
-#define    releaseBillDelay 1000 //to wait untill bill released
+#define    releaseBillDelay 3000 //to wait untill bill released
 #define    getBillDelay     1000 //to wait until bill catched for sure
 #define    upStepperDelay   3    //to wait before up/down steps
 #define    roStepperDelay   10   //to wait before rotation steps
@@ -43,10 +43,10 @@
 #include <Servo.h> 
 Servo drawerServo;// create servo object to control a servo
 Servo warehouseServo;// create servo object to control a servo
-#define drawerServoOpen     10
-#define drawerServoClose    100
-#define WarehouseServoOpen  10
-#define WarehouseServoClose 100
+#define drawerServoOpen     100
+#define drawerServoClose    10
+#define WarehouseServoOpen  100
+#define WarehouseServoClose 10
 
 //variables definition
 char  serialData;             //for storing serial string
@@ -64,12 +64,8 @@ int seq[8][4]={ {1,0,0,0},
                 {0,0,0,1},
                 {1,0,0,1} };
 
-
 void setup() {
   //Setting input/output Pins
-  //servos
-  drawerServo.attach(drawer);        // attaches the doorServo on pin Arduino pin
-  warehouseServo.attach(warehouse);  // attaches the warehouseServo on pin Arduino pin
   //outputs
   pinMode(  upPin1,     OUTPUT);
   pinMode(  upPin2,     OUTPUT);
@@ -80,6 +76,10 @@ void setup() {
   pinMode(  roPin3,     OUTPUT);
   pinMode(  roPin4,     OUTPUT);
   pinMode(  pump,       OUTPUT);
+  
+  pinMode(  drawer,     OUTPUT);
+  pinMode(  warehouse,  OUTPUT);
+  
   //inputs
   pinMode(  infrared,    INPUT);
   pinMode(  doorSwitch,  INPUT);
@@ -89,12 +89,16 @@ void setup() {
   //initialize Serial Communication to communicate with RPI, with Baud rate=9600
   Serial.begin(9600);
   
+  //servos
+  drawerServo.attach(drawer);        // attaches the doorServo on pin Arduino pin
+  warehouseServo.attach(warehouse);  // attaches the warehouseServo on pin Arduino pin
+  
   //define drawer limit switch pin as interrupt pin to secure drawer automatically
   attachInterrupt(digitalPinToInterrupt(doorSwitch), closeDoor, RISING);
   
   pinMode(  trayLimit,  INPUT);
   pinMode(  upLimit,    INPUT);
-  initialization();
+  //initialization();
 }
 
 //Check serial buffer for any strings from RPI and call Corresponding Function
@@ -111,6 +115,26 @@ void loop() {
       sendSensorData();
     else if(serialData == 'c')
       closeWarehouse();
+      
+    //for debugging
+    else if(serialData == 'f')
+      closeDoor();
+    else if(serialData == 'o')
+      moveToWarehouse(0);
+    else if(serialData == 't')
+      moveToWarehouse(1);
+    else if(serialData == 'y')
+      moveToWarehouse(2);
+      else if(serialData == 'u')
+      moveToWarehouse(3);
+      else if(serialData == 'i')
+      moveToWarehouse(4);
+    else if(serialData == 'q')
+      moveOneStep();
+    else if(serialData == 'r')
+      getBill();
+    else if(serialData == 'm')
+      stopMotors();
   }
 }
 
@@ -154,11 +178,12 @@ void closeWarehouse(){
 
 void sendSensorData(){
   tempFloat = analogRead(temperature);
-  tempFloat = tempFloat * (5 / 1024); //converting binary number to voltage (0-1024)->(0-5)
+  tempFloat = (tempFloat * 5) /1024; //converting binary number to voltage (0-1024)->(0-5)
+  tempFloat = (tempFloat)*100; //converting voltage to temperature
   Serial.print(tempFloat);
   Serial.print("\r\n");
   tempFloat = analogRead(lightLevel);
-  tempFloat = tempFloat * (5 / 1024); //converting binary number to voltage (0-1024)->(0-5)
+  tempFloat = ( (tempFloat * 5) / 1024); //converting binary number to voltage (0-1024)->(0-5)
   Serial.print(tempFloat);
   Serial.print("\r\n");
 }
@@ -190,7 +215,7 @@ float getCurrent() {
 void hardwareDispense(){
   int bills[4];
   int total = 0;
-  for (int i = 0; i<=4; i++){
+  for (int i = 0; i<4; i++){
     while(Serial.available() <= 0){ //wait until RPI sends voltage on serial buffer
     }
     serialData = Serial.read(); //get the desired count from serial
@@ -220,9 +245,11 @@ void hardwareDispense(){
 //dispense one bill from given warehouse number
 void dispenseOneBill(int warehouseNumber){
   moveToWarehouse(warehouseNumber); //move to drug warehouse
+  //stopMotors(); //to solve power issue but now not needed
   getBill(); //get one bill using pump
   moveToWarehouse(0); //return to empty warehouse
   releaseBill(); //release bill to the door
+  //stopMotors(); //to solve power issue but now not needed
 }
 
 //move to given warehouse number
@@ -245,6 +272,7 @@ void getBill(){
   digitalWrite(pump, HIGH); //activates the pump
   while(/*getCurrent() < currentThreeshold &&*/ steps < maxUpSteps){ //go down until gets one bill
     stepDown(); //move one step down
+    steps++;
   }
   delay(getBillDelay); //to wait until bill catched for sure
   for(int i = 0; i<steps; i++){ //retun to initial position
@@ -260,8 +288,9 @@ void releaseBill(){
 
 //moves 72 degree to select next warehouse
 void moveOneStep(){
+  
   for(int i = 0; i < step72; i++){
-    for(int j = 0; j <= 7; j++){
+    for(int j = 7; j >= 0; j--){
       digitalWrite(roPin1, seq[j][0]);
       digitalWrite(roPin2, seq[j][1]);
       digitalWrite(roPin3, seq[j][2]);
