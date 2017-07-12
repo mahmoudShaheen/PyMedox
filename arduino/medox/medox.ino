@@ -26,8 +26,8 @@
 #define    temperature  A2
 #define    lightLevel   A3
 //limits for initialization
-#define    trayLimit    A4
-#define    upLimit      A5
+#define    trayLimit    A5
+#define    upLimit      A4
 
 #define    releaseBillDelay 3000 //to wait untill bill released
 #define    getBillDelay     1000 //to wait until bill catched for sure
@@ -36,7 +36,7 @@
 
 #define    currentThreeshold 5    //current where pump gets a bill
 #define    currentOffset     2    //offset for current sensor
-#define    maxUpSteps        350   //maximum number of steps pump should move 50 ----> 1 revolation 
+#define    maxUpSteps        650   //maximum number of steps pump should move 50 ----> 1 revolation 
 #define    step72            10   //steps required to rotate 72 degrees
 
 //servo constants
@@ -98,6 +98,11 @@ void setup() {
   
   pinMode(  trayLimit,  INPUT);
   pinMode(  upLimit,    INPUT);
+  
+  //double check initial state
+  //initialization();
+  //initialization();
+  //initialization();
   //initialization();
 }
 
@@ -135,28 +140,38 @@ void loop() {
       getBill();
     else if(serialData == 'm')
       stopMotors();
+    else if(serialData == 'b')
+      initialization();
   }
 }
 
 void initialization(){
+  int i = 0;
   while(digitalRead(upLimit) != HIGH){//move up motor to initial place
-    for(int i = 0; i <= 7; i++){
-      digitalWrite(upPin1, seq[i][0]);
-      digitalWrite(upPin2, seq[i][1]);
-      digitalWrite(upPin3, seq[i][2]);
-      digitalWrite(upPin4, seq[i][3]);
-      delay(upStepperDelay);
-    }
+    digitalWrite(upPin1, seq[i][0]);
+    digitalWrite(upPin2, seq[i][1]);
+    digitalWrite(upPin3, seq[i][2]);
+    digitalWrite(upPin4, seq[i][3]);
+    delay(upStepperDelay);
+    i++;
+    if(i == 8)
+      i = 0;
   }
-  while(digitalRead(trayLimit) != HIGH){//move tray motor to initial place
-    for(int i = 0; i <= 7; i++){
-      digitalWrite(roPin1, seq[i][0]);
-      digitalWrite(roPin2, seq[i][1]);
-      digitalWrite(roPin3, seq[i][2]);
-      digitalWrite(roPin4, seq[i][3]);
-      delay(roStepperDelay);
-    }
+  stopMotors();
+  //delay(1000);
+  
+  i=0;
+  while(digitalRead(trayLimit) != LOW){//move Tray motor to initial place
+    digitalWrite(roPin1, seq[i][0]);
+    digitalWrite(roPin2, seq[i][1]);
+    digitalWrite(roPin3, seq[i][2]);
+    digitalWrite(roPin4, seq[i][3]);
+    delay(roStepperDelay);
+    i++;
+    if(i == 8)
+      i = 0;
   }
+  
   stopMotors();
 }
 
