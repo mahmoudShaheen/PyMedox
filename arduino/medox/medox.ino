@@ -32,7 +32,7 @@
 #define    releaseBillDelay 3000 //to wait untill bill released
 #define    getBillDelay     1000 //to wait until bill catched for sure
 #define    upStepperDelay   3    //to wait before up/down steps
-#define    roStepperDelay   10   //to wait before rotation steps
+#define    roStepperDelay   15   //to wait before rotation steps
 
 #define    currentThreeshold 5    //current where pump gets a bill
 #define    currentOffset     2    //offset for current sensor
@@ -44,7 +44,7 @@
 Servo drawerServo;// create servo object to control a servo
 Servo warehouseServo;// create servo object to control a servo
 #define drawerServoOpen     100
-#define drawerServoClose    10
+#define drawerServoClose    0
 #define WarehouseServoOpen  100
 #define WarehouseServoClose 10
 
