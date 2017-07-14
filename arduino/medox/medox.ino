@@ -290,8 +290,10 @@ void getBill(){
     steps++;
   }
   delay(getBillDelay); //to wait until bill catched for sure
-  for(int i = 0; i<steps; i++){ //retun to initial position
-    stepUp(); //move one step up
+  //for(int i = 0; i<steps; i++){ 
+    //retun to initial position
+  while(digitalRead(upLimit) != HIGH){ //makes sure that the pump won't go up more than safe level 
+      stepUp(); //move one step up
   }
 }
 
