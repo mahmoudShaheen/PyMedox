@@ -17,12 +17,11 @@
 #define    roPin4       11
 //other outputs
 #define    drawer       12
-#define    warehouse    13
+#define    warehouse    A1 
 #define    pump         A0 //used as digital O/P as digital pins are all used
 //sensors
 #define    infrared     2  //interrupt pin
 #define    doorSwitch   3  //interrupt pin
-#define    current      A1
 #define    temperature  A2
 #define    lightLevel   A3
 //limits for initialization
@@ -34,8 +33,6 @@
 #define    upStepperDelay   3    //to wait before up/down steps
 #define    roStepperDelay   15   //to wait before rotation steps
 
-#define    currentThreeshold 5    //current where pump gets a bill
-#define    currentOffset     2    //offset for current sensor
 #define    maxUpSteps        650   //maximum number of steps pump should move 50 ----> 1 revolation 
 #define    step72            10   //steps required to rotate 72 degrees
 
@@ -43,9 +40,9 @@
 #include <Servo.h> 
 Servo drawerServo;// create servo object to control a servo
 Servo warehouseServo;// create servo object to control a servo
-#define drawerServoOpen     100
+#define drawerServoOpen     90
 #define drawerServoClose    0
-#define WarehouseServoOpen  100
+#define WarehouseServoOpen  90
 #define WarehouseServoClose 10
 
 //variables definition
@@ -83,7 +80,6 @@ void setup() {
   //inputs
   pinMode(  infrared,    INPUT);
   pinMode(  doorSwitch,  INPUT);
-  pinMode(  current,     INPUT);
   pinMode(  temperature, INPUT);
   pinMode(  lightLevel,  INPUT);
   //initialize Serial Communication to communicate with RPI, with Baud rate=9600
@@ -99,11 +95,11 @@ void setup() {
   pinMode(  trayLimit,  INPUT);
   pinMode(  upLimit,    INPUT);
   
-  //double check initial state
-  //initialization();
-  //initialization();
-  //initialization();
-  //initialization();
+  //initialization(); //initialize motors "moves them to initial position"
+  //open all doors for debugging
+  openDoor();
+  openWarehouse();
+  stopMotors();
 }
 
 //Check serial buffer for any strings from RPI and call Corresponding Function
@@ -145,34 +141,34 @@ void loop() {
   }
 }
 
+//initialize motors "moves them to initial position"
 void initialization(){
   int i = 0;
-  while(digitalRead(upLimit) != HIGH){//move up motor to initial place
-    digitalWrite(upPin1, seq[i][0]);
-    digitalWrite(upPin2, seq[i][1]);
-    digitalWrite(upPin3, seq[i][2]);
-    digitalWrite(upPin4, seq[i][3]);
-    delay(upStepperDelay);
-    i++;
-    if(i == 8)
-      i = 0;
+  for(int j = 0; j<4; j++){//double check
+    while(digitalRead(upLimit) != HIGH){//move up motor to initial place
+      digitalWrite(upPin1, seq[i][0]);
+      digitalWrite(upPin2, seq[i][1]);
+      digitalWrite(upPin3, seq[i][2]);
+      digitalWrite(upPin4, seq[i][3]);
+      delay(upStepperDelay);
+      i++;
+      if(i == 8)
+        i = 0;
+    }
+    stopMotors();
+    i=0;
+    while(digitalRead(trayLimit) != LOW){//move Tray motor to initial place
+      digitalWrite(roPin1, seq[i][0]);
+      digitalWrite(roPin2, seq[i][1]);
+      digitalWrite(roPin3, seq[i][2]);
+      digitalWrite(roPin4, seq[i][3]);
+      delay(roStepperDelay);
+      i++;
+      if(i == 8)
+        i = 0;
+    }
+    stopMotors();
   }
-  stopMotors();
-  //delay(1000);
-  
-  i=0;
-  while(digitalRead(trayLimit) != LOW){//move Tray motor to initial place
-    digitalWrite(roPin1, seq[i][0]);
-    digitalWrite(roPin2, seq[i][1]);
-    digitalWrite(roPin3, seq[i][2]);
-    digitalWrite(roPin4, seq[i][3]);
-    delay(roStepperDelay);
-    i++;
-    if(i == 8)
-      i = 0;
-  }
-  
-  stopMotors();
 }
 
 void openDoor(){
@@ -216,15 +212,6 @@ void counter() {
   billCount = billCount + 1;
 }
 
-//Calculate the current pump using
-float getCurrent() {
-  tempFloat = analogRead(current); //read from motor current sensor pin
-  tempFloat = (tempFloat * 5) / 1024; //converting binary number to voltage (0-1024)->(0-5)
-  tempFloat = tempFloat - currentOffset; //subtracting sensor offset
-  tempFloat = tempFloat / 0.185; //mapping sensor output 'Voltage' to 'Ampere', 185mV/A
-  return tempFloat;
-}
-
 //dispenses given bill array
 //array is given via serial port from RPI
 void hardwareDispense(){
@@ -248,6 +235,7 @@ void hardwareDispense(){
     }
   }
   stopMotors(); //stop all motors "set all pins to low"
+  initialization(); //re-initialize motors
   //check number of dispensed bills
   if(billCount == total)
     Serial.print("t");
@@ -285,7 +273,7 @@ void moveToWarehouse(int warehouseNumber){
 void getBill(){
   int steps = 0; //for storing steps to return to initial position again
   digitalWrite(pump, HIGH); //activates the pump
-  while(/*getCurrent() < currentThreeshold &&*/ steps < maxUpSteps){ //go down until gets one bill
+  while(steps < maxUpSteps){ //go down until gets one bill
     stepDown(); //move one step down
     steps++;
   }
