@@ -40,10 +40,11 @@
 #include <Servo.h> 
 Servo drawerServo;// create servo object to control a servo
 Servo warehouseServo;// create servo object to control a servo
-#define drawerServoOpen     90
+#define drawerServoOpen     100
 #define drawerServoClose    0
-#define WarehouseServoOpen  90
+#define WarehouseServoOpen  100
 #define WarehouseServoClose 10
+#define servoPositionDelay  500 //to wait until servo reaches position
 
 //variables definition
 char  serialData;             //for storing serial string
@@ -174,24 +175,28 @@ void initialization(){
 void openDoor(){
   drawerServo.attach(drawer);        // attaches the doorServo on pin Arduino pin
   drawerServo.write(drawerServoOpen);
+  delay(servoPositionDelay); //waits servo to reach position
   drawerServo.detach(); //detaches the doorServo
 }
 
 void openWarehouse(){
   warehouseServo.attach(warehouse);  // attaches the warehouseServo on pin Arduino pin
   warehouseServo.write(WarehouseServoOpen);
+  delay(servoPositionDelay); //waits servo to reach position
   warehouseServo.detach(); //detaches the warehouseServo
 }
 
 void closeDoor(){
   drawerServo.attach(drawer);        // attaches the doorServo on pin Arduino pin
   drawerServo.write(drawerServoClose);
+  delay(servoPositionDelay); //waits servo to reach position
   drawerServo.detach(); //detaches the doorServo
 }
 
 void closeWarehouse(){
   warehouseServo.attach(warehouse);  // attaches the warehouseServo on pin Arduino pin
   warehouseServo.write(WarehouseServoClose);
+  delay(servoPositionDelay); //waits servo to reach position
   warehouseServo.detach(); //detaches the warehouseServo
 }
 
