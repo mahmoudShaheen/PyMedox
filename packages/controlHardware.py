@@ -26,22 +26,34 @@ import subprocess #for calling restart shell script
 
 import threading #for timer thread
 import datetime #for datetime.timedelta
-doorDelay = datetime.timedelta(minutes=5,seconds=0) #5 minutes then send door not opened notification
-timerThread = threading.Timer(doorDelay, target=doorNotOpenedNotification) #to check if door not opened for 5 minutes
+doorDelay = 5*60 #5 minutes then send door not opened notification
+timerThread = threading.Timer(doorDelay, doorNotOpenedNotification) #to check if door not opened for 5 minutes
 
 def dispenseBills(rTime):
 	print 'dispensing Bills Called'
 	data.waitForDispense = True
 	bills = getBills(rTime)
 	check = checkBills(bills)
-	if (not check):
+	if (not check): #no enough pills for this schedule
 		notEnoughBillsNotification()
+		print "no enough pills for this schedule"
+		data.waitForDispense = False
+		data.emptyWarehouse = True
+		return
 	hardwareDispense(bills)
-	markDispensed(rtime)
+	markDispensed(rTime)
 	subtractBills(bills)
 	dispensedNotification()
 	checkDay() #checks if bills in warehouse are enough for one day, also updates bill count in fb db
-	timerThread.start()
+	try:
+		timerThread.cancel()
+	except:
+		print "trying to cancel not started thread: doorThread"
+	try:
+		timerThread = threading.Timer(doorDelay, doorNotOpenedNotification) #to check if door not opened for 5 minutes
+		timerThread.start()
+	except:
+		print "door thread at dispenseBills Exception"
 	data.waitForDispense = False
 
 def updateTimeLCD (rTime):
@@ -51,7 +63,7 @@ def updateTimeLCD (rTime):
 	return
 	
 def hardwareDispense(rBills):
-	print 'hardwareDispense Called'
+	print 'hardwareDispense Called for ' + str(rBills[0]) + ", "  + str(rBills[1]) + ", "  + str(rBills[2]) + ", " + str(rBills[3])  
 	while (data.waitForSerial):
 		time.sleep(data.serialDelay)
 	data.waitForSerial = True
@@ -62,14 +74,18 @@ def hardwareDispense(rBills):
 	sendSerial(str(rBills[2]))
 	sendSerial(str(rBills[3]))
 	state = getSerial()
-	data.waitForSerial = False
 	if (state == "t"):
 		print 'dispense ended successfully'
 	if (state == "f"):
 		print 'dispense ended with errors'
+	data.waitForSerial = False
 	
 def openDoor():
 	print 'openDoor Called'
+	try:
+		timerThread.cancel()
+	except:
+		print "trying to cancel not started thread: doorThread"
 	while (data.waitForSerial):
 		time.sleep(data.serialDelay)
 	data.waitForSerial = True
@@ -89,6 +105,15 @@ def openWarehouse():
 	data.waitForSerial = False
 	warehouseOpenedNotification()
 
+def closeWarehouse():
+	print 'closeWarehouse Called'
+	while (data.waitForSerial):
+		time.sleep(data.serialDelay)
+	data.waitForSerial = True
+	#hardware openWarehouse
+	sendSerial("c")
+	data.waitForSerial = False
+	
 #returns measurements from sensors temperature, light
 def getSensorData():
 	if(data.waitForSerial):
@@ -100,7 +125,7 @@ def getSensorData():
 
 #accepts boolean state, turn on/off switches
 def updateSwitch(state1, state2, state3, state4, state5, state6, state7, state8):
-	print "switch 1,2 should be " + state1 + ", " + state2 + ", " + state3 + ", " + state4 + ", " + state5 + ", " + state6 + ", " + state7 + ", " + state8
+	print "switches should be " + str(state1) + ", " +  str(state2)  + ", " +  str(state3)  + ", " +  str(state4)  + ", " +  str(state5)  + ", " +  str(state6)  + ", " +  str(state7)  + ", " +  str(state8) 
 	gpioSwitches(state1, state2, state3, state4, state5, state6, state7, state8)
 
 def callEmergencyNotification():

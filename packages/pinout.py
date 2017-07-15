@@ -12,7 +12,8 @@ import data
 
 import RPi.GPIO as GPIO           # import RPi.GPIO module
 GPIO.setmode(GPIO.BCM)            # choose BCM or BOARD
-# set a pins as an output
+GPIO.setwarnings(False)
+#set a pins as an output
 GPIO.setup(data.switch1, GPIO.OUT)
 GPIO.setup(data.switch2, GPIO.OUT)
 GPIO.setup(data.switch3, GPIO.OUT)
@@ -33,3 +34,4 @@ def gpioSwitches(state1, state2, state3, state4, state5, state6, state7, state8)
 	GPIO.output(data.switch6, state6)       # set pin value to switch state
 	GPIO.output(data.switch7, state7)       # set pin value to switch state
 	GPIO.output(data.switch8, state8)       # set pin value to switch state
+	print "gpio should be " + str(state1) + ", " +  str(state2)  + ", " +  str(state3)  + ", " +  str(state4)  + ", " +  str(state5)  + ", " +  str(state6)  + ", " +  str(state7)  + ", " +  str(state8) 

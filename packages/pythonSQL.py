@@ -11,7 +11,6 @@ import data #to use data using data.x 'change occurs here is limited to here'
 from time import strftime
 import datetime
 import time
-import unicodedata
 
 #Get current time "returns hours, minutes"
 def getCTime():
@@ -23,6 +22,44 @@ def getCTime():
 
 #Get the next time bills will be dispensed
 def getNextSchedule():
+	if(checkEmptyTimetable()):
+		return False
+	db = sqlite3.connect(data.dbName)
+	curs = db.cursor()
+	hmTime=getCTime()
+	h=int(hmTime[0])
+	m=int(hmTime[1])
+	s=int(hmTime[2])
+	rTime=datetime.timedelta(hours=h,minutes=m,seconds=s)
+	sql = """SELECT `time` FROM `timetable` where `dispensed` = "0"
+		ORDER BY `time` ASC"""
+	curs.execute(sql)
+	tempTime = curs.fetchone()
+	timeArray = []
+	while (tempTime is not None):
+		tempTime = tempTime[0]
+		h,m,s = tempTime.split(':') #split the time string by ':'
+		tempTime = datetime.timedelta(hours=int(h),minutes=int(m),seconds=int(s)) #convert h,m,s to ints then to timedelta object
+		timeArray.append(tempTime)
+		tempTime = curs.fetchone()
+	close(db)
+	if (len(timeArray) == 0): #return false if timetable is empty
+		return False
+	#print "time array:\n" , timeArray
+	if(len(timeArray) > 0 ):
+		if (rTime > timeArray[-1]): #if currentTime > last item in ordered array "dispensing finished for today"
+			print"min: ",  timeArray[0]
+			resetDispensed() #mark all drugs as not dispensed "as this is the end of the day"
+			return str(timeArray[0])
+		else:
+			for row in timeArray:
+				if (row > rTime):
+					print"row: " , row
+					return str(row)
+	return false;
+
+#return whether timetable is empty or not
+def checkEmptyTimetable():
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
 	hmTime=getCTime()
@@ -37,29 +74,18 @@ def getNextSchedule():
 	timeArray = []
 	while (tempTime is not None):
 		tempTime = tempTime[0]
-		uncoded = unicodedata.normalize('NFKD', tempTime).encode('ascii','ignore') #convert received Unicode to string
-		h,m,s = uncoded.split(':') #split the time string by ':'
+		h,m,s = tempTime.split(':') #split the time string by ':'
 		tempTime = datetime.timedelta(hours=int(h),minutes=int(m),seconds=int(s)) #convert h,m,s to ints then to timedelta object
 		timeArray.append(tempTime)
 		tempTime = curs.fetchone()
 	close(db)
-	if (len(timeArray) == 0): #return false if timetable is empty
-		return False
-	print "time array:\n" , timeArray
-	if(len(timeArray) > 0 ):
-		if (rTime > timeArray[-1]): #if currentTime > last item in ordered array "dispensing finished for today"
-			print"min: ",  timeArray[0]
-			resetDispensed() #mark all drugs as not dispensed "as this is the end of the day"
-			return str(timeArray[0])
-		else:
-			for row in timeArray:
-				if (row > rTime):
-					print"row: " , row
-					return str(row)
-	return false;
+	if (len(timeArray) == 0): #return True if timetable is empty
+		return True
+	return False
 
 #returns array of number of bills for every warehouse medicine which should be dispensed
 def getBills(rTime):
+	rTime = addZero(rTime)
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
 
@@ -67,9 +93,12 @@ def getBills(rTime):
 		WHERE `time` = '%s' """ % (rTime)
 	curs.execute(sql)
 	billString = curs.fetchone()
-	billString = billString[0]
-	billArray = billString.split(",") #convert string to array by separator ","
-	bills = [int(i) for i in billArray] #convert the string array to int array
+	if(not billString is None):
+		billString = billString[0]
+		billArray = billString.split(",") #convert string to array by separator ","
+		bills = [int(i) for i in billArray] #convert the string array to int array
+	else:
+		bills = [0,0,0,0] 
 	close(db)
 	return bills
 
@@ -107,6 +136,7 @@ def subtractBills(bills): #update bill_count after dispensing, accepts array of 
 	close(db)
 
 def markDispensed(rTime): #mark a time as dispensed
+	rTime = addZero(rTime)
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()	
 	sql = """UPDATE timetable SET  
@@ -116,6 +146,7 @@ def markDispensed(rTime): #mark a time as dispensed
 	close(db)
 
 def resetDispensed():
+	print "resetDispensed called"
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
 	sql = """UPDATE `timetable` SET	
@@ -124,6 +155,7 @@ def resetDispensed():
 	close(db)
 
 def isDispensed(rTime):
+	rTime = addZero(rTime)
 	db = sqlite3.connect(data.dbName)
 	curs = db.cursor()
 	sql = """SELECT `dispensed` FROM `timetable`
@@ -212,3 +244,10 @@ def getTotalDayBills():
 		totalBills = [x + y for x, y in zip(totalBills, bills)]
 		billString = curs.fetchone()
 	return totalBills
+
+def addZero(rTime):
+	h, m, s = rTime.split(":")
+	h = int(h)
+	if(h < 10):
+		rTime = "0" + rTime
+	return rTime
