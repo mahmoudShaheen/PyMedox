@@ -85,10 +85,6 @@ void setup() {
   //initialize Serial Communication to communicate with RPI, with Baud rate=9600
   Serial.begin(9600);
   
-  //servos
-  drawerServo.attach(drawer);        // attaches the doorServo on pin Arduino pin
-  warehouseServo.attach(warehouse);  // attaches the warehouseServo on pin Arduino pin
-  
   //define drawer limit switch pin as interrupt pin to secure drawer automatically
   attachInterrupt(digitalPinToInterrupt(doorSwitch), closeDoor, RISING);
   
@@ -171,20 +167,32 @@ void initialization(){
   }
 }
 
+
+//Servos Functions
+//attach then detach to avoid servos power disipating trying to
+//stay in the same position
 void openDoor(){
+  drawerServo.attach(drawer);        // attaches the doorServo on pin Arduino pin
   drawerServo.write(drawerServoOpen);
+  drawerServo.detach(); //detaches the doorServo
 }
 
 void openWarehouse(){
+  warehouseServo.attach(warehouse);  // attaches the warehouseServo on pin Arduino pin
   warehouseServo.write(WarehouseServoOpen);
+  warehouseServo.detach(); //detaches the warehouseServo
 }
 
 void closeDoor(){
+  drawerServo.attach(drawer);        // attaches the doorServo on pin Arduino pin
   drawerServo.write(drawerServoClose);
+  drawerServo.detach(); //detaches the doorServo
 }
 
 void closeWarehouse(){
+  warehouseServo.attach(warehouse);  // attaches the warehouseServo on pin Arduino pin
   warehouseServo.write(WarehouseServoClose);
+  warehouseServo.detach(); //detaches the warehouseServo
 }
 
 void sendSensorData(){
