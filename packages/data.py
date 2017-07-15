@@ -58,7 +58,7 @@ switch8 = 9
 
 ###Firebase real-time database paths
 rootURL = "medox-f7251.firebaseio.com"
-UID = "Vbxp1DKBbMckkknNyDW0c0IGEYa2"
+UID = "6p04HgXi46cxdDPxEVvlw7WI5i92"
 userURL = rootURL + "/users/" + UID
 messagesURL = userURL + "/notification/.json"
 commandURL = userURL + "/command/" + ".json"
