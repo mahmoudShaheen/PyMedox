@@ -28,7 +28,7 @@
 #define    trayLimit    A5
 #define    upLimit      A4
 
-#define    releaseBillDelay 3000 //to wait untill bill released
+#define    releaseBillDelay 5000 //to wait untill bill released
 #define    getBillDelay     1000 //to wait until bill catched for sure
 #define    upStepperDelay   3    //to wait before up/down steps
 #define    roStepperDelay   15   //to wait before rotation steps
@@ -51,7 +51,7 @@ char  serialData;             //for storing serial string
 float tempFloat       = 0;    //for saving sensor data temporary
 int billCount         = 0;    //for storing bill count added by ISR
 int selectedWarehouse = 0;    //to know what warehouse is above the door "0 is the empty one"
-
+bool closeDrawer = false;     //to close door from main loop
 /// using half step mode
 int seq[8][4]={ {1,0,0,0},
                 {1,1,0,0},
@@ -87,7 +87,7 @@ void setup() {
   Serial.begin(9600);
   
   //define drawer limit switch pin as interrupt pin to secure drawer automatically
-  attachInterrupt(digitalPinToInterrupt(doorSwitch), closeDoor, RISING);
+  attachInterrupt(digitalPinToInterrupt(doorSwitch), callCloseDoor, RISING);
   
   pinMode(  trayLimit,  INPUT);
   pinMode(  upLimit,    INPUT);
@@ -135,6 +135,10 @@ void loop() {
       stopMotors();
     else if(serialData == 'b')
       initialization();
+  }
+  if(closeDrawer){
+    closeDoor();
+    closeDrawer = false;
   }
 }
 
@@ -184,6 +188,16 @@ void openWarehouse(){
   warehouseServo.write(WarehouseServoOpen);
   delay(servoPositionDelay); //waits servo to reach position
   warehouseServo.detach(); //detaches the warehouseServo
+}
+
+void callCloseDoor(){
+  //used as ISR can't have delay()
+  //and delay is needed to wait for servo
+  //to get to its position
+  //so a variable is used instead
+  //to call closeDoor() from main loop
+  closeDrawer = true;
+  
 }
 
 void closeDoor(){
