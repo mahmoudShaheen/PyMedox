@@ -92,7 +92,7 @@ void setup() {
   pinMode(  trayLimit,  INPUT);
   pinMode(  upLimit,    INPUT);
   
-  //initialization(); //initialize motors "moves them to initial position"
+  initialization(); //initialize motors "moves them to initial position"
   //open all doors for debugging
   openDoor();
   openWarehouse();
@@ -242,6 +242,7 @@ void counter() {
 //dispenses given bill array
 //array is given via serial port from RPI
 void hardwareDispense(){
+  initialization(); //re-initialize motors
   int bills[4];
   int total = 0;
   for (int i = 0; i<4; i++){
